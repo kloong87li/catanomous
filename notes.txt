@@ -6,30 +6,34 @@ greens = [19, 0, 7] [179, 255, 255]
 
 sand = [10, 100, 175] [40, 255, 255]
 
-brick? = [0, 237, 0] [179, 255, 255]
+brick red = [2, 149, 117] [9, 255, 255]
 
-
+wheat yellow - [0, 200, 200] [36, 255, 255]
 
 Tile Colors
-Wheat: [0, 0, 157] [179, 255, 255]
-Sheep: [27, 0, 0] [179, 255, 255]
-Brick: [0, 0, 0] [13, 255, 255]
-Wood: [19, 0, 0] [27, 255, 255]
-Iron: [0, 0, 0] [18, 198, 199]
-
-
 Brick: [0, 0, 0] [12, 255, 255]
 Iron: [12, 0, 0] [20, 255, 139]
-Desert: [13, 0, 140] [179, 255, 150]
+Desert: [0, 0, 139] [32, 255, 161]
 Wheat: [13, 0, 151] [179, 255, 255]
 Sheep: [27, 0, 0] [179, 255, 255]
 Wood: [19, 0, 0] [27, 255, 255]
 
+
 ~~ TODO ~~
 
-Make GUI super class for trackbar stuff
-  - convert thresh.py to use it
 
-Test greyscale thresholding
 
-Implement waterfall
+
+~~~ CV Pipelne ~~~~
+- Use thresholding to isolate board (based on water)
+- Erode to exaggerate dark lines
+- Canny edge detection to get edges of hexagons
+- Watershed algorithm to get disjoint components i.e each hexagon
+- findContours to get each hexagon
+- Replace each hexagon with its mean color
+    - meanShiftFilter
+    - replaceamplify red/yellow colors using thresholding
+    - compute mean
+- compute K-Means to quantize hexagon colors
+
+

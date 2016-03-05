@@ -12,15 +12,34 @@ class BoardDetector(object):
 
   def __init__(self, img):
     contours = self._get_init_contours(img)
+    mean_colors = np.copy(img)
 
+    # Create and process each hexagon
     self._hexagons = []
     for c in contours:
-      self._hexagons.append(CatanHexagon(c, img))
+      hexagon = CatanHexagon(c, img)
+      self._hexagons.append(hexagon)
+
+      # Replace hexagon with its mean color
+      mean = hexagon.get_mean_color()
+      np.copyto(mean_colors, CVUtils.replace_color(mean_colors, hexagon.get_hex_mask(), mean))
+
+    # Isolate hexagons
+    contour_mask = np.zeros((mean_colors.shape[0], mean_colors.shape[1]), np.uint8)
+    cv2.drawContours(contour_mask, contours, -1, [255, 255, 255], thickness=-1)
+    mean_colors = CVUtils.mask_image(mean_colors, contour_mask)
+
+    # Get kmeans
+    kmeans = self._kmeans(mean_colors)
+
+    # Classify resources
+    for h in self._hexagons:
+      h.classify_resource(kmeans)
+    
+    GUIUtils.show_image(kmeans)
 
   def get_hexagons(self):
     return self._hexagons
-
-
 
 
   ####################################
@@ -122,6 +141,20 @@ class BoardDetector(object):
 
     return result
 
+  def _kmeans(self, img):
+    Z = img.reshape((-1,3))
+    # convert to np.float32
+    Z = np.float32(Z)
+
+    # Define criteria, number of clusters(K) and apply kmeans()
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1, 2.0)
+    K = 8
+    ret,label,center = cv2.kmeans(Z, K, None, criteria, 1, cv2.KMEANS_PP_CENTERS)
+
+    # Now convert back into uint8, and make original image
+    center = np.uint8(center)
+    res = center[label.flatten()]
+    return res.reshape((img.shape))
 
 
 

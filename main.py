@@ -19,7 +19,7 @@ def label_hexagons(img, hexagons):
     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
 def main():
-  test_img = "images/1536x2048.jpg"
+  test_img = "images/2992x4000_1.jpg"
 
   # load the image and resize it
   orig = cv2.imread(test_img)
@@ -28,11 +28,13 @@ def main():
 
   GUIUtils.show_image(img)
 
+  # from thresh import do_color_thresh
+  # do_color_thresh(img)
+
   board = BoardDetector(img)
   hexagons = board.get_hexagons()
 
-  # from thresh import do_color_thresh
-  # do_color_thresh(img)
+
 
   label_hexagons(img, hexagons)
   GUIUtils.show_image(img)

@@ -101,7 +101,7 @@ class ColorThreshTrackbar(TrackbarWindow):
     upper = [self._bounds['H_upper'], self._bounds['S_upper'], self._bounds['V_upper']]
     print lower, upper
     img = CVUtils.replace_range(self._hsv, self._img, lower, upper, self._replaced_color)
-    return (img, 700)
+    return (img, 1000)
 
   def get_maxes(self):
     return self._max_ranges
