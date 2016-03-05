@@ -26,7 +26,6 @@ class CatanHexagon(object):
     # Get ROI
     (x, y, w, h) = cv2.boundingRect(contour)
     roi = masked[y:y+h, x:x+w]
-    roi = cv2.pyrMeanShiftFiltering(roi, 10, 15)
 
     # Compute mean color
     channels = cv2.split(roi)
