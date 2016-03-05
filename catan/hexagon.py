@@ -7,11 +7,12 @@ from utils.gui import GUIUtils
 class CatanHexagon(object):
 
   _TILE_COLOR_BOUNDS = {
-    'WHEAT': ([0, 0, 157], [179, 255, 255]),
-    'SHEEP': ([27, 0, 0], [179, 255, 255]),
-    'BRICK': ([0, 0, 0], [13, 255, 255]),
+    'DESERT': ([13, 0, 140], [179, 255, 150]),
+    'WHEAT': ([13, 0, 151], [179, 255, 255]),
+    'IRON': ([12, 0, 0], [20, 255, 139]),
     'WOOD': ([19, 0, 0], [27, 255, 255]),
-    'IRON': ([0, 0, 0], [25, 164, 142])
+    'SHEEP': ([27, 0, 0], [179, 255, 255]),
+    'BRICK': ([0, 0, 0], [12, 255, 255]),
   }
 
   def __init__(self, contour, img):
@@ -25,6 +26,7 @@ class CatanHexagon(object):
     # Get ROI
     (x, y, w, h) = cv2.boundingRect(contour)
     roi = masked[y:y+h, x:x+w]
+    roi = cv2.pyrMeanShiftFiltering(roi, 10, 15)
 
     # Compute mean color
     channels = cv2.split(roi)
@@ -33,9 +35,10 @@ class CatanHexagon(object):
     # TEMP: Show mean color on original
     np.copyto(img, CVUtils.replace_color(img, contour_mask, mean))
 
-    self._resource = 'DESERT'
+    self._resource = '???'
+    hsv_mean = cv2.cvtColor(np.array([[mean]], np.uint8), cv2.COLOR_BGR2HSV).flatten()
     for key in self._TILE_COLOR_BOUNDS:
-      if self._color_in_range(mean, self._TILE_COLOR_BOUNDS[key]):
+      if self._color_in_range(hsv_mean, self._TILE_COLOR_BOUNDS[key]):
         self._resource = key
         break
 
