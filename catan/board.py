@@ -24,18 +24,18 @@ class BoardDetector(object):
       mean = hexagon.get_mean_color()
       np.copyto(mean_colors, CVUtils.replace_color(mean_colors, hexagon.get_hex_mask(), mean))
 
-    # Isolate hexagons
+    # Isolate hexagons in original image
     contour_mask = np.zeros((mean_colors.shape[0], mean_colors.shape[1]), np.uint8)
     cv2.drawContours(contour_mask, contours, -1, [255, 255, 255], thickness=-1)
     mean_colors = CVUtils.mask_image(mean_colors, contour_mask)
 
-    # Get kmeans
+    # Run kmeans
     kmeans = self._kmeans(mean_colors)
 
-    # Classify resources
+    # Classify resources based on the mean
     for h in self._hexagons:
       h.classify_resource(kmeans)
-    
+
     GUIUtils.show_image(kmeans)
 
   def get_hexagons(self):
@@ -67,7 +67,6 @@ class BoardDetector(object):
     # Get countours
     return self._get_hexagon_contours(img, markers)
 
-
   def _get_water_only(self, hsv):
     return CVUtils.range_mask(hsv, [60, 0, 30], [115, 255, 255])
 
@@ -94,7 +93,7 @@ class BoardDetector(object):
     return CVUtils.mask_image(board, CVUtils.invert_mask(self._get_water_only(hsv)))
 
   def _get_watershed_markers(self, img, thresh):
-    # Taken form http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_imgproc/py_watershed/py_watershed.html
+    # Taken from http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_imgproc/py_watershed/py_watershed.html
     
     # Get area that we are sure is BG
     sure_bg = cv2.dilate(thresh, np.ones((3,3),np.uint8), iterations=3)

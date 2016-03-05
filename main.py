@@ -8,6 +8,7 @@ from utils.gui import GUIUtils
 from catan.board import BoardDetector
 
 
+# Labels hexagons with their resource classifications
 def label_hexagons(img, hexagons):
   for i in xrange(len(hexagons)):
     c = hexagons[i]._contour
@@ -17,6 +18,7 @@ def label_hexagons(img, hexagons):
     # cv2.circle(img, (int(x), int(y)), int(r), (0, 255, 0), 2)
     cv2.putText(img, "{}".format(res), (int(x) - 10, int(y)),
     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+
 
 def main():
   test_img = "images/2992x4000_1.jpg"
@@ -34,14 +36,11 @@ def main():
   board = BoardDetector(img)
   hexagons = board.get_hexagons()
 
-
-
   label_hexagons(img, hexagons)
   GUIUtils.show_image(img)
 
   
-  
-  
+    
 
 
 if __name__ == "__main__":

@@ -19,7 +19,7 @@ class CVUtils(object):
     table = np.array([np.uint8(i / ratio * ratio) for i in xrange(256)])
     return cv2.LUT(img, table)
 
-
+  # Returns a mask for the given color range
   @staticmethod
   def range_mask(img, lower, upper):
     if isinstance(lower, list):

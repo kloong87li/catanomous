@@ -32,22 +32,28 @@ class CatanHexagon(object):
 
     self._resource = '???'
 
+  # Determine if the given color is within the given bounds
   def _color_in_range(self, value, (lower, upper)):
     res = True
     for i in xrange(len(value)):
       res = res and (lower[i] < value[i] and value[i] < upper[i])
     return res
 
+  # Returns the ROI of this hexagon in the given img
   def _get_roi(self, img):
     (x, y, w, h) = cv2.boundingRect(self._contour)
     return img[y:y+h, x:x+w]
 
+  # Classify the resource based on the results of kmeans algo
   def classify_resource(self, kmeans_res):
     roi = self._get_roi(kmeans_res)
     (h, w, z) = roi.shape
 
+    # Get mean for this hexagon
     mean = roi[h/2, w/2]
     hsv_mean = cv2.cvtColor(np.array([[mean]], np.uint8), cv2.COLOR_BGR2HSV).flatten()
+    
+    # Check each color bound
     for key in self._TILE_COLORS:
       if self._color_in_range(hsv_mean, self._TILE_COLOR_BOUNDS[key]):
         self._resource = key
@@ -56,6 +62,8 @@ class CatanHexagon(object):
   def get_hex_mask(self):
     return self._hex_mask
 
+  # Returns mean color of this hexagon
+  # includes some preprocessing to help make each mean unique
   def get_mean_color(self):
     # get ROI
     (x, y, w, h) = cv2.boundingRect(self._contour)
