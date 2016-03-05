@@ -1,0 +1,27 @@
+ocean blue = [60, 0, 30] [115, 255, 255]
+
+mountains = [0, 0, 8] [14, 172, 85]
+
+greens = [19, 0, 7] [179, 255, 255]
+
+sand = [10, 100, 175] [40, 255, 255]
+
+brick? = [0, 237, 0] [179, 255, 255]
+
+
+
+Tile Colors
+Wheat: [0, 0, 157] [179, 255, 255]
+Sheep: [27, 0, 0] [179, 255, 255]
+Brick: [0, 0, 0] [13, 255, 255]
+Wood: [19, 0, 0] [27, 255, 255]
+Iron: [0, 0, 0] [25, 164, 142]
+
+~~ TODO ~~
+
+Make GUI super class for trackbar stuff
+  - convert thresh.py to use it
+
+Test greyscale thresholding
+
+Implement waterfall
