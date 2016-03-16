@@ -2,9 +2,9 @@ import cv2
 import imutils
 import numpy as np
 
-from utils.cv import CVUtils
-from utils.gui import GUIUtils
-from utils.trackbar import ColorThreshTrackbar, GrayThreshTrackbar, CannyTrackbar
+from .cv import CVUtils
+from .gui import GUIUtils
+from .trackbar import ColorThreshTrackbar, GrayThreshTrackbar, CannyTrackbar
 
 
 

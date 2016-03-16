@@ -50,6 +50,10 @@ class CVUtils(object):
   def mask_image(img, mask):
     return cv2.bitwise_and(img, img, mask=mask)
 
+  @staticmethod
+  def convert_single_color(color, conv_code):
+    return cv2.cvtColor([[color]], conv_code)[0, 0]
+
 
 
 

@@ -5,7 +5,7 @@ import numpy as np
 from utils.cv import CVUtils
 from utils.gui import GUIUtils
 
-from catan.board import BoardDetector
+from catan.detection.board import BoardDetector
 
 
 # Labels hexagons with their resource classifications
@@ -28,7 +28,7 @@ def main():
   img = imutils.resize(orig, width=1000)
   ratio = orig.shape[0] / float(img.shape[0])
 
-  GUIUtils.show_image(img)
+  # GUIUtils.show_image(img)
 
   # from thresh import do_color_thresh
   # do_color_thresh(img)

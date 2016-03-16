@@ -5,60 +5,45 @@ import numpy as np
 from utils.cv import CVUtils
 from utils.gui import GUIUtils
 
-from .hexagon import CatanHexagon
+#
+# Detects and returns hexagon contours in the given image of a board
+#
+class HexagonDetector(object):
+
+  _INITAL_EROSION = (3, 3)
+  _CANNY_THRESH = { # threshold found from thresh.py tool
+    'LOWER': 163,
+    'UPPER': 1023
+  }
+  _WATER = { #HSV
+    'LOWER': [60, 0, 30],
+    'UPPER': [115, 255, 255]
+  }
+  _HEX_CONTOUR_SIZE = .25 # percent of total board
 
 
-class BoardDetector(object):
-
-  def __init__(self, img):
-    contours = self._get_init_contours(img)
-    mean_colors = np.copy(img)
-
-    # Create and process each hexagon
-    self._hexagons = []
-    for c in contours:
-      hexagon = CatanHexagon(c, img)
-      self._hexagons.append(hexagon)
-
-      # Replace hexagon with its mean color
-      mean = hexagon.get_mean_color()
-      np.copyto(mean_colors, CVUtils.replace_color(mean_colors, hexagon.get_hex_mask(), mean))
-
-    # Isolate hexagons in original image
-    contour_mask = np.zeros((mean_colors.shape[0], mean_colors.shape[1]), np.uint8)
-    cv2.drawContours(contour_mask, contours, -1, [255, 255, 255], thickness=-1)
-    mean_colors = CVUtils.mask_image(mean_colors, contour_mask)
-
-    # Run kmeans
-    kmeans = self._kmeans(mean_colors)
-
-    # Classify resources based on the mean
-    for h in self._hexagons:
-      h.classify_resource(kmeans)
-
-    GUIUtils.show_image(kmeans)
-
-  def get_hexagons(self):
-    return self._hexagons
+  # Returns list of hexagon contours
+  def detect_hexagons(self, img):
+    return self._get_contours(img)
 
 
   ####################################
   #                                  #
-  # Computer Vision related methods  #
+  # Private methods                  #
   #                                  #
   ####################################
 
-  def _get_init_contours(self, img):
+  def _get_contours(self, img):
     # erode image first
-    eroded = cv2.erode(img, np.ones((3, 3), np.uint8))
+    eroded = cv2.erode(img, np.ones(self._INITAL_EROSION, np.uint8))
     # isolate board using color thresholding
     board = self._isolate_board(eroded)
     # get edges using canny edge detction
-    edges = cv2.Canny(board, 163, 1023) # threshold found from thresh.py tool
-    edges = cv2.dilate(edges, np.ones((3, 3), np.uint8))
+    edges = cv2.Canny(board, self._CANNY_THRESH['LOWER'], self._CANNY_THRESH['UPPER'])
+    edges = cv2.dilate(edges, np.ones(self._INITAL_EROSION, np.uint8))
     # isolate hexagons and erode to exaggerate
     hexagons = CVUtils.mask_image(board, CVUtils.invert_mask(edges))
-    hexagons = cv2.erode(hexagons, np.ones((3, 3), np.uint8))
+    hexagons = cv2.erode(hexagons, np.ones(self._INITAL_EROSION, np.uint8))
     # Convert to grayscale and threshold
     gray = cv2.cvtColor(hexagons, cv2.COLOR_BGR2GRAY)
     thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)[1]
@@ -68,7 +53,7 @@ class BoardDetector(object):
     return self._get_hexagon_contours(img, markers)
 
   def _get_water_only(self, hsv):
-    return CVUtils.range_mask(hsv, [60, 0, 30], [115, 255, 255])
+    return CVUtils.range_mask(hsv, self._WATER['LOWER'], self._WATER['UPPER'])
 
   def _isolate_board(self, img):
     # Isolate water
@@ -96,7 +81,7 @@ class BoardDetector(object):
     # Taken from http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_imgproc/py_watershed/py_watershed.html
     
     # Get area that we are sure is BG
-    sure_bg = cv2.dilate(thresh, np.ones((3,3),np.uint8), iterations=3)
+    sure_bg = cv2.dilate(thresh, np.ones(self._INITAL_EROSION, np.uint8), iterations=3)
     # Get area that we are sure is FG
     dist_transform = cv2.distanceTransform(thresh, cv2.DIST_L2, 5)
     ret, sure_fg = cv2.threshold(dist_transform, 0.7*dist_transform.max(), 255, 0)
@@ -135,25 +120,10 @@ class BoardDetector(object):
       c = max(cnts, key=cv2.contourArea)
 
       # only include contours that are small enough
-      if cv2.contourArea(c) < (.25*h*w):
+      if cv2.contourArea(c) < (self._HEX_CONTOUR_SIZE*h*w):
         result.append(c)
 
     return result
-
-  def _kmeans(self, img):
-    Z = img.reshape((-1,3))
-    # convert to np.float32
-    Z = np.float32(Z)
-
-    # Define criteria, number of clusters(K) and apply kmeans()
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1, 2.0)
-    K = 8
-    ret,label,center = cv2.kmeans(Z, K, None, criteria, 1, cv2.KMEANS_PP_CENTERS)
-
-    # Now convert back into uint8, and make original image
-    center = np.uint8(center)
-    res = center[label.flatten()]
-    return res.reshape((img.shape))
 
 
 

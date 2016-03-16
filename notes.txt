@@ -20,7 +20,9 @@ Wood: [19, 0, 0] [27, 255, 255]
 
 
 ~~ TODO ~~
-
+Figure out tesseract stuff
+detect desert based on lack of circle?
+adjust other thresholds
 
 
 
@@ -32,7 +34,7 @@ Wood: [19, 0, 0] [27, 255, 255]
 - findContours to get each hexagon
 - Replace each hexagon with its mean color
     - meanShiftFilter
-    - replaceamplify red/yellow colors using thresholding
+    - replace/amplify red/yellow colors using thresholding
     - compute mean
 - compute K-Means to quantize hexagon colors
 
