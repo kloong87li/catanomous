@@ -48,7 +48,6 @@ class TileDetector(object):
     mask = self._get_circle_mask(scale=.75)
     img = CVUtils.mask_image(self._hex_roi, mask)
     self._number = self._num_detect.detect_number(img, mask, self._circle)
-    print self._number
 
   # Returns mean color of this hexagon
   # includes some preprocessing to help make each mean unique

@@ -13,11 +13,14 @@ def label_hexagons(img, hexagons):
   for i in xrange(len(hexagons)):
     c = hexagons[i]._contour
     res = hexagons[i]._resource
+    num = hexagons[i]._number
     # draw a circle enclosing the object
     ((x, y), r) = cv2.minEnclosingCircle(c)
     # cv2.circle(img, (int(x), int(y)), int(r), (0, 255, 0), 2)
-    cv2.putText(img, "{}".format(res), (int(x) - 10, int(y)),
-    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+    cv2.putText(img, "{}".format(res), (int(x) - 20, int(y)-30),
+      cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+    cv2.putText(img, "{}".format(num), (int(x) - 10, int(y) + 30),
+      cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
 def detect_image(img):
   # load the image and resize it
@@ -30,8 +33,13 @@ def detect_image(img):
   # from thresh import do_color_thresh
   # do_color_thresh(img)
 
+  import time
+  initial = time.time()
+
   board = BoardDetector(img)
   hexagons = board.get_hexagons()
+
+  print "Time:", time.time() - initial
 
   label_hexagons(img, hexagons)
   GUIUtils.show_image(img)
@@ -45,8 +53,10 @@ def main():
           "3232x2416_4.jpg"]
 
   test_imgs = [
-    "1536x2048.jpg","2992x4000_1.jpg","2992x4000_2.jpg"
+    "1536x2048.jpg", "2992x4000_1.jpg","2992x4000_2.jpg", "2992x4000_3.jpg",
+    "3232x2416_4.jpg"
   ]
+  
   for img in test_imgs:
     print img
     detect_image("images/" + img)
