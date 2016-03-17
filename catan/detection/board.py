@@ -42,7 +42,7 @@ class BoardDetector(object):
     kmeans = self._kmeans(mean_colors)
 
     # Classify resources based on the kmeans result and detect the number
-    for h in reverse(self._hexagons):
+    for h in self._hexagons:
       h.detect_resource(kmeans)
       h.detect_number()
 
