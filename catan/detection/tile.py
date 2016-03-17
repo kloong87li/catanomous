@@ -14,8 +14,9 @@ class TileDetector(object):
   _MEAN_SHIFT = 10
   _COLOR_AMPLIFICATIONS = [
     # lower, upper, new color
-    ([0, 200, 200], [36, 255, 255], [255, 255, 255]),  # wheat
-    ([2, 149, 117], [9, 255, 255], [0, 0, 255])        # brick
+    ([0, 200, 200], [36, 255, 255], [0, 255, 255]),  # wheat
+    ([2, 149, 117], [9, 255, 255], [0, 0, 255]),     # brick
+    ([0, 81, 81], [46, 154, 187], [200, 200, 200])   # iron
   ]
   _CIRCLE_SCALE = 1.1
 
@@ -30,6 +31,8 @@ class TileDetector(object):
     self._color_detect = TileColorDetector()
     self._num_detect = TileNumDetector(self._hex_roi)
 
+    self._circle = self._detect_circle()
+
     self._resource = None
     self._number = None
 
@@ -38,6 +41,14 @@ class TileDetector(object):
   def detect_resource(self, kmeans_res):
     self._resource = self._color_detect.detect_resource(self._get_roi(kmeans_res))
 
+  def detect_number(self):
+    if self._circle is None:
+      return None
+
+    mask = self._get_circle_mask(scale=.75)
+    img = CVUtils.mask_image(self._hex_roi, mask)
+    self._number = self._num_detect.detect_number(img, mask, self._circle)
+    print self._number
 
   # Returns mean color of this hexagon
   # includes some preprocessing to help make each mean unique
@@ -48,12 +59,12 @@ class TileDetector(object):
     circle_mask = self._get_circle_mask(self._CIRCLE_SCALE)
     if circle_mask is not None:
       roi = CVUtils.mask_image(roi, CVUtils.invert_mask(circle_mask))
+    else:
+      return np.zeros(3)
 
     # Amplify colors to differentiate things like wheat from desert, brick, etc.
     for amp in self._COLOR_AMPLIFICATIONS:
       roi = CVUtils.replace_range(CVUtils.to_hsv(roi), roi, amp[0], amp[1], amp[2])
-
-    GUIUtils.show_image(roi)
     
     # Compute mean color
     channels = cv2.split(roi)
@@ -62,7 +73,7 @@ class TileDetector(object):
 
   # returns circle mask, scaled by passed in percentage
   def _get_circle_mask(self, scale=1):
-    circle = self._detect_circle()
+    circle = self._circle
     if circle is None:
       return None
 
@@ -73,11 +84,12 @@ class TileDetector(object):
     return mask
 
   def _detect_circle(self):
-    # Blur and get circles
-    gray = cv2.cvtColor(cv2.medianBlur(self._hex_roi, 5), cv2.COLOR_BGR2GRAY)
+    # Blur/erode and get circles
+    img = cv2.erode(cv2.medianBlur(self._hex_roi, 3), np.ones((1, 1), np.uint8))
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
-    circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1, w/2,
-                                param1=50,param2=30,minRadius=w/10,maxRadius=w/3)
+    circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,.9, w/2,
+                                param1=50,param2=25,minRadius=w/10,maxRadius=w/4)
     if circles is None:
       return None
 

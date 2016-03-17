@@ -7,16 +7,16 @@ from utils.gui import GUIUtils
 class TileColorDetector(object):
 
   _TILE_COLOR_BOUNDS = {
-    'DESERT': ([13, 0, 146], [22, 255, 172]),
+    'DESERT': ([0, 0, 0], [1, 1, 1]),
+    'BRICK': ([0, 146, 0], [16, 255, 255]),
+    'IRON': ([0, 0, 123], [179, 145, 255]),
     'WHEAT': ([13, 0, 151], [179, 255, 255]),
-    'IRON': ([12, 0, 0], [20, 255, 139]),
     'WOOD': ([19, 0, 0], [27, 255, 255]),
     'SHEEP': ([27, 0, 0], [179, 255, 255]),
-    'BRICK': ([0, 0, 0], [12, 255, 255]),
   }
 
   _TILE_COLORS = [
-    'DESERT', 'WHEAT', 'IRON', 'WOOD', 'SHEEP', 'BRICK'
+    'DESERT', 'BRICK', 'IRON', 'WHEAT', 'WOOD', 'SHEEP'
   ]
 
   # Classify the resource based on its color in the passed in the region of interest
@@ -38,7 +38,7 @@ class TileColorDetector(object):
   def _color_in_range(self, value, (lower, upper)):
     res = True
     for i in xrange(len(value)):
-      res = res and (lower[i] < value[i] and value[i] < upper[i])
+      res = res and (lower[i] <= value[i] and value[i] < upper[i])
     return res
 
 

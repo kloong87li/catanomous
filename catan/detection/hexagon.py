@@ -12,14 +12,19 @@ class HexagonDetector(object):
 
   _INITAL_EROSION = (3, 3)
   _CANNY_THRESH = { # threshold found from thresh.py tool
-    'LOWER': 163,
-    'UPPER': 1023
+    'LOWER': 100,
+    'UPPER': 900
   }
   _WATER = { #HSV
     'LOWER': [60, 0, 30],
     'UPPER': [115, 255, 255]
   }
   _HEX_CONTOUR_SIZE = .25 # percent of total board
+  _DIST_TRANS_PERCENT = .60 # percent of max distance
+  _HOUGH_THRESH = {
+    'UPPER': 60,
+    'LOWER': 15
+  }
 
 
   # Returns list of hexagon contours
@@ -79,20 +84,34 @@ class HexagonDetector(object):
 
   def _get_watershed_markers(self, img, thresh):
     # Taken from http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_imgproc/py_watershed/py_watershed.html
-    
+
     # Get area that we are sure is BG
     sure_bg = cv2.dilate(thresh, np.ones(self._INITAL_EROSION, np.uint8), iterations=3)
     # Get area that we are sure is FG
-    dist_transform = cv2.distanceTransform(thresh, cv2.DIST_L2, 5)
-    ret, sure_fg = cv2.threshold(dist_transform, 0.7*dist_transform.max(), 255, 0)
-    # Find region that we are not sure about
+    dist_transform = cv2.distanceTransform(thresh, cv2.DIST_L1, 3)
+    ret, sure_fg = cv2.threshold(dist_transform, self._DIST_TRANS_PERCENT*dist_transform.max(), 255, 0)
     sure_fg = np.uint8(sure_fg)
+
+    # Modification to above, use circles as reference for markers
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    (h, w) = thresh.shape
+    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/10,
+                                param1=self._HOUGH_THRESH['UPPER'],
+                                param2=self._HOUGH_THRESH['LOWER'],
+                                minRadius=h/40,maxRadius=h/25)
+    circle_mask = np.zeros((h, w), np.uint8)
+    for circle in circles[0]:
+      # Draw circles on mask
+      cv2.circle(circle_mask, (circle[0], circle[1]), np.uint8(circle[2]), 255, thickness=-1)
+    sure_fg = cv2.bitwise_or(sure_fg, circle_mask)
+
+    # Find region that we are not sure about
     unknown = cv2.subtract(sure_bg, sure_fg)
     # Label Markers
     ret, markers = cv2.connectedComponents(sure_fg)
     # Add one to all labels so that sure_bg area is not 0, but 1
     markers = markers + 1
-    # Now, mark the region of unknown with zero
+    # Now, mark the region of unknown with zero and region of known with non-zero
     markers[unknown == 255] = 0
     # Get markers
     markers = cv2.watershed(img, markers)

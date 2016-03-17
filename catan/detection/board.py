@@ -10,6 +10,8 @@ from .tile import TileDetector
 
 class BoardDetector(object):
 
+  _KMEANS_ATTEMPTS = 2
+
   def __init__(self, img):
     contours = HexagonDetector().detect_hexagons(img)
     mean_colors = np.copy(img)
@@ -39,12 +41,10 @@ class BoardDetector(object):
     # Run kmeans
     kmeans = self._kmeans(mean_colors)
 
-    GUIUtils.show_image(mean_colors)
-    GUIUtils.show_image(kmeans)
-
-    # Classify resources based on the kmeans algo
+    # Classify resources based on the kmeans result and detect the number
     for h in self._hexagons:
       h.detect_resource(kmeans)
+      h.detect_number()
 
 
   def get_hexagons(self):
@@ -56,10 +56,10 @@ class BoardDetector(object):
     # convert to np.float32
     Z = np.float32(Z)
 
-    # Define criteria, number of clusters(K) and apply kmeans()
+    # Define criteria, number of clusters (K) and apply kmeans()
     criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1, 2.0)
-    K = 8
-    ret,label,center = cv2.kmeans(Z, K, None, criteria, 1, cv2.KMEANS_PP_CENTERS)
+    K = 6
+    ret,label,center = cv2.kmeans(Z, K, None, criteria, self._KMEANS_ATTEMPTS, cv2.KMEANS_PP_CENTERS)
 
     # Now convert back into uint8, and make original image
     center = np.uint8(center)
