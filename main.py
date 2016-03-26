@@ -5,6 +5,7 @@ import numpy as np
 from utils.cv import CVUtils
 from utils.gui import GUIUtils
 
+from catan.config import CVConfig
 from catan.detection.board import BoardDetector
 
 
@@ -87,10 +88,14 @@ def main():
   #   print img
   #   detect_image(test_dir + img)
 
-  for img in android_test:
-    print img
-    detect_image(android_dir + img)
+  # for img in android_test:
+  #   print img
+  #   detect_image(android_dir + img)
   
+  config = CVConfig(True)
+  print config.get("TEST", cv2.imread("images/test1_1.jpg"))
+  print config.get("TEST", cv2.imread("images/test1_1.jpg"))
+  config.save()
 
   
     

@@ -52,6 +52,10 @@ class TrackbarWindow(object):
 
   def get_values(self):
     return {}
+
+  def get_result(self):
+    # Return the resulting values of the thresholding
+    return None
     
 
 
@@ -63,7 +67,7 @@ class ColorThreshTrackbar(TrackbarWindow):
 
   _WINDOW_NAME = 'Color Threshold'
 
-  def __init__(self, img, replaced_color=None):
+  def __init__(self, img, defaults=None, replaced_color=None):
     self._replaced_color = replaced_color or [255, 255, 255]
     self._img = img
     
@@ -79,14 +83,24 @@ class ColorThreshTrackbar(TrackbarWindow):
       'V_upper': 255
     }
 
-    self._bounds = {
-      'H_lower': 10,
-      'H_upper': 40,
-      'S_lower': 100,
-      'S_upper': 255,
-      'V_lower': 175,
-      'V_upper': 255
-    }
+    if defaults is None:
+      self._bounds = {
+        'H_lower': 10,
+        'H_upper': 40,
+        'S_lower': 100,
+        'S_upper': 255,
+        'V_lower': 175,
+        'V_upper': 255
+      }
+    else:
+      self._bounds = {
+        'H_lower': defaults[0][0],
+        'H_upper': defaults[1][0],
+        'S_lower': defaults[0][1],
+        'S_upper': defaults[1][1],
+        'V_lower': defaults[0][2],
+        'V_upper': defaults[1][0]
+      }
 
     super(ColorThreshTrackbar, self).__init__()
 
@@ -109,12 +123,16 @@ class ColorThreshTrackbar(TrackbarWindow):
   def get_values(self):
     return self._bounds
 
+  def get_result(self):
+    return ([self._bounds["H_lower"], self._bounds["S_lower"], self._bounds["V_lower"]], 
+            [self._bounds["H_upper"], self._bounds["S_upper"], self._bounds["V_upper"]])
+
 
 
 class GrayThreshTrackbar(TrackbarWindow):
   _WINDOW_NAME = 'Grayscale Threshold'
 
-  def __init__(self, img, replaced_color=None):
+  def __init__(self, img, defaults=None, replaced_color=None):
     self._img = img
     self._gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -122,10 +140,18 @@ class GrayThreshTrackbar(TrackbarWindow):
       'Lower': 255,
       'Upper': 255,
     }
-    self._values = {
-      'Lower': 10,
-      'Upper': 100,
-    }
+
+    if defaults is None:
+      self._values = {
+        'Lower': 10,
+        'Upper': 100,
+      }
+    else:
+      self._values = {
+        'Lower': defaults[0],
+        'Upper': defaults[1]
+      }
+
     super(GrayThreshTrackbar, self).__init__()
 
   def get_window_name(self):
@@ -146,23 +172,34 @@ class GrayThreshTrackbar(TrackbarWindow):
   def get_values(self):
     return self._values
 
+  def get_result(self):
+    return (self._values['Lower'], self._values['Upper'])
+
 
 
 
 class CannyTrackbar(TrackbarWindow):
   _WINDOW_NAME = 'Canny Threshold'
 
-  def __init__(self, img, replaced_color=None):
+  def __init__(self, img, defaults=None, replaced_color=None):
     self._img = img
 
     self._maxes = {
       'Lower': 1024,
       'Upper': 1024,
     }
-    self._values = {
-      'Lower': 200,
-      'Upper': 300,
-    }
+
+    if defaults is None:
+      self._values = {
+        'Lower': 200,
+        'Upper': 300,
+      }
+    else:
+      self._values = {
+        'Lower': defaults[0],
+        'Upper': defaults[1]
+      }
+
     super(CannyTrackbar, self).__init__()
 
   def get_window_name(self):
@@ -184,4 +221,6 @@ class CannyTrackbar(TrackbarWindow):
   def get_values(self):
     return self._values
 
+  def get_result(self):
+    return (self._values['Lower'], self._values['Upper'])
 
