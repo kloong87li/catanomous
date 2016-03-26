@@ -5,7 +5,7 @@ import json
 
 class CVConfig(object):
 
-  def __init__(self, config_file="config.json", reset=False, always_reset=False):
+  def __init__(self, config_file, reset=False, always_reset=False, no_file=False):
     self._config_file = config_file
     self._always_reset = always_reset
 
@@ -31,6 +31,10 @@ class CVConfig(object):
     # Append reset status
     for key in self._values:
       self._values[key].append(reset)
+
+    if no_file:
+      print "!! [CONFIG] Not using a config file. Using hardcoded defaults instead."
+      return
 
     # try to load from _CONFIG_FILE
     try:

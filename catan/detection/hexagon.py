@@ -13,7 +13,7 @@ class HexagonDetector(object):
   def __init__(self, config):
     self._config = config
 
-  _INITAL_EROSION = (3, 3)
+  _INITAL_EROSION = (4, 4)
   _HEX_CONTOUR_SIZE = .25 # percent of total board
   _DIST_TRANS_PERCENT = .60 # percent of max distance
 
