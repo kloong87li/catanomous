@@ -4,9 +4,15 @@ import numpy as np
 
 from .cv import CVUtils
 from .gui import GUIUtils
-from .trackbar import ColorThreshTrackbar, GrayThreshTrackbar, CannyTrackbar
+from .trackbar import ColorThreshTrackbar, GrayThreshTrackbar, CannyTrackbar, HoughTrackbar
 
 
+def do_hough(img):
+  hough = HoughTrackbar(img)
+  hough.show_image()
+  GUIUtils.wait()
+  hough.close_image()
+  return hough.get_image()[0]
 
 def do_canny(img):
   canny = CannyTrackbar(img)
@@ -23,6 +29,7 @@ def do_color_thresh(img):
   return thresh.get_image()[0]
 
 def do_gray_thresh(img):
+  img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
   thresh = GrayThreshTrackbar(img)
   thresh.show_image()
   GUIUtils.wait()

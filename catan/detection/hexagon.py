@@ -10,21 +10,12 @@ from utils.gui import GUIUtils
 #
 class HexagonDetector(object):
 
+  def __init__(self, config):
+    self._config = config
+
   _INITAL_EROSION = (3, 3)
-  _CANNY_THRESH = { # threshold found from thresh.py tool
-    'LOWER': 100,
-    'UPPER': 900
-  }
-  _WATER = { #HSV
-    'LOWER': [60, 0, 30],
-    'UPPER': [115, 255, 255]
-  }
   _HEX_CONTOUR_SIZE = .25 # percent of total board
   _DIST_TRANS_PERCENT = .60 # percent of max distance
-  _HOUGH_THRESH = {
-    'UPPER': 60,
-    'LOWER': 15
-  }
 
 
   # Returns list of hexagon contours
@@ -44,7 +35,8 @@ class HexagonDetector(object):
     # isolate board using color thresholding
     board = self._isolate_board(eroded)
     # get edges using canny edge detction
-    edges = cv2.Canny(board, self._CANNY_THRESH['LOWER'], self._CANNY_THRESH['UPPER'])
+    canny_config = self._config.get("BOARD_CANNY", board)
+    edges = cv2.Canny(board, canny_config[0], canny_config[1])
     edges = cv2.dilate(edges, np.ones(self._INITAL_EROSION, np.uint8))
     # isolate hexagons and erode to exaggerate
     hexagons = CVUtils.mask_image(board, CVUtils.invert_mask(edges))
@@ -57,13 +49,14 @@ class HexagonDetector(object):
     # Get countours
     return self._get_hexagon_contours(img, markers)
 
-  def _get_water_only(self, hsv):
-    return CVUtils.range_mask(hsv, self._WATER['LOWER'], self._WATER['UPPER'])
+  def _get_water_only(self, img, hsv):
+    water_thresh = self._config.get("BOARD_COLOR_WATER", img)
+    return CVUtils.range_mask(hsv, water_thresh[0], water_thresh[1])
 
   def _isolate_board(self, img):
     # Isolate water
     hsv = CVUtils.to_hsv(img)
-    water_mask = self._get_water_only(hsv)
+    water_mask = self._get_water_only(img, hsv)
     (h, w) = water_mask.shape
 
     # add 2 rows and columns for floodFill requirements
@@ -80,7 +73,7 @@ class HexagonDetector(object):
     board = CVUtils.mask_image(img, water_mask)
 
     # remove water
-    return CVUtils.mask_image(board, CVUtils.invert_mask(self._get_water_only(hsv)))
+    return CVUtils.mask_image(board, CVUtils.invert_mask(self._get_water_only(img, hsv)))
 
   def _get_watershed_markers(self, img, thresh):
     # Taken from http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_imgproc/py_watershed/py_watershed.html
@@ -95,10 +88,11 @@ class HexagonDetector(object):
     # Modification to above, use circles as reference for markers
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = thresh.shape
-    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/10,
-                                param1=self._HOUGH_THRESH['UPPER'],
-                                param2=self._HOUGH_THRESH['LOWER'],
-                                minRadius=h/40,maxRadius=h/25)
+    hough_config = self._config.get("BOARD_HOUGH", img)
+    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/hough_config[2],
+                                param1=hough_config[0][1],
+                                param2=hough_config[0][0],
+                                minRadius=h/hough_config[1][0],maxRadius=h/hough_config[1][1])
     circle_mask = np.zeros((h, w), np.uint8)
     for circle in circles[0]:
       # Draw circles on mask

@@ -15,29 +15,26 @@ def label_hexagons(img, hexagons):
     c = hexagons[i]._contour
     res = hexagons[i]._resource
     num = hexagons[i]._number
-    # draw a circle enclosing the object
     ((x, y), r) = cv2.minEnclosingCircle(c)
-    # cv2.circle(img, (int(x), int(y)), int(r), (0, 255, 0), 2)
+    
+    # draw contour
+    cv2.drawContours(img, [c], -1, (0, 255, 0), 2)
+    
     cv2.putText(img, "{}".format(res), (int(x) - 20, int(y)-30),
       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
     cv2.putText(img, "{}".format(num), (int(x) - 10, int(y) + 30),
       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-def detect_image(img):
+def detect_image(config, img):
   # load the image and resize it
   orig = cv2.imread(img)
-  img = imutils.resize(orig, width=1000)
-  ratio = orig.shape[0] / float(img.shape[0])
-
-  # GUIUtils.show_image(img)
-
-  # from thresh import do_color_thresh
-  # do_color_thresh(img)
+  img = imutils.resize(orig, width=1200)
+  # ratio = orig.shape[0] / float(img.shape[0])
 
   import time
   initial = time.time()
 
-  board = BoardDetector(img)
+  board = BoardDetector(config, img)
   hexagons = board.get_hexagons()
 
   print "Time:", time.time() - initial
@@ -54,9 +51,10 @@ def main():
           "3232x2416_2.jpg", "3232x2416_3.jpg",
           "3232x2416_4.jpg"]
   android_test = [
-          "1536x2048.jpg", "2992x4000_1.jpg",
-          "2992x4000_2.jpg", "2992x4000_3.jpg",
-          "3232x2416_4.jpg"
+          "1536x2048.jpg", 
+          "2992x4000_1.jpg",
+          # "2992x4000_2.jpg", "2992x4000_3.jpg",
+          # "3232x2416_4.jpg"
   ]
 
   
@@ -92,11 +90,11 @@ def main():
   #   print img
   #   detect_image(android_dir + img)
   
-  config = CVConfig(True)
-  print config.get("TEST", cv2.imread("images/test1_1.jpg"))
-  print config.get("TEST", cv2.imread("images/test1_1.jpg"))
+  config = CVConfig(reset=False)
+  for img in test2_imgs:
+     print img
+     detect_image(config, test_dir + img)
   config.save()
-
   
     
 

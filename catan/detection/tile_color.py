@@ -5,22 +5,15 @@ from utils.cv import CVUtils
 from utils.gui import GUIUtils
 
 class TileColorDetector(object):
-
-  _TILE_COLOR_BOUNDS = {
-    'DESERT': ([0, 0, 0], [1, 1, 1]),
-    'BRICK': ([0, 146, 0], [16, 255, 255]),
-    'IRON': ([0, 0, 123], [179, 145, 255]),
-    'WHEAT': ([13, 0, 151], [179, 255, 255]),
-    'WOOD': ([19, 0, 0], [27, 255, 255]),
-    'SHEEP': ([27, 0, 0], [179, 255, 255]),
-  }
-
   _TILE_COLORS = [
     'DESERT', 'BRICK', 'IRON', 'WHEAT', 'WOOD', 'SHEEP'
   ]
 
+  def __init__(self, config):
+    self._config = config
+
   # Classify the resource based on its color in the passed in the region of interest
-  def detect_resource(self, roi):
+  def detect_resource(self, roi, kmeans_res):
     (h, w, z) = roi.shape
 
     # Get mean for this hexagon
@@ -29,7 +22,8 @@ class TileColorDetector(object):
     
     # Check each color bound
     for key in self._TILE_COLORS:
-      if self._color_in_range(hsv_mean, self._TILE_COLOR_BOUNDS[key]):
+      thresh = self._config.get("TILE_COLOR_"+key, kmeans_res)
+      if self._color_in_range(hsv_mean, thresh):
         return key
         break
     return None

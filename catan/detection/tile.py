@@ -13,22 +13,24 @@ class TileDetector(object):
 
   _MEAN_SHIFT = 10
   _COLOR_AMPLIFICATIONS = [
-    # lower, upper, new color
-    ([0, 200, 200], [36, 255, 255], [0, 255, 255]),  # wheat
-    ([2, 149, 117], [9, 255, 255], [0, 0, 255]),     # brick
-    ([0, 81, 81], [46, 154, 187], [200, 200, 200])   # iron
+    # config_key, new color
+    ("TILE_AMPLIFY_WHEAT", [0, 255, 255]),  # wheat
+    ("TILE_AMPLIFY_BRICK", [0, 0, 255]),     # brick
+    ("TILE_AMPLIFY_IRON", [200, 200, 200])   # iron
   ]
   _CIRCLE_SCALE = 1.1
 
 
-  def __init__(self, contour, img):
+  def __init__(self, config, contour, img, board_img):
     self._contour = contour
+    self._config = config
+    self._board_img = board_img
 
     # Store ROI
     self._hex_roi = self._get_roi(img)
 
     # Initialize detectors
-    self._color_detect = TileColorDetector()
+    self._color_detect = TileColorDetector(config)
     self._num_detect = TileNumDetector(self._hex_roi)
 
     self._circle = self._detect_circle()
@@ -39,7 +41,7 @@ class TileDetector(object):
 
   # Detects the resource using the result of the kmeans algo
   def detect_resource(self, kmeans_res):
-    self._resource = self._color_detect.detect_resource(self._get_roi(kmeans_res))
+    self._resource = self._color_detect.detect_resource(self._get_roi(kmeans_res), kmeans_res)
 
   def detect_number(self):
     if self._circle is None:
@@ -63,7 +65,8 @@ class TileDetector(object):
 
     # Amplify colors to differentiate things like wheat from desert, brick, etc.
     for amp in self._COLOR_AMPLIFICATIONS:
-      roi = CVUtils.replace_range(CVUtils.to_hsv(roi), roi, amp[0], amp[1], amp[2])
+      thresh = self._config.get(amp[0], self._board_img)
+      roi = CVUtils.replace_range(CVUtils.to_hsv(roi), roi, thresh[0], thresh[1], amp[1])
     
     # Compute mean color
     channels = cv2.split(roi)

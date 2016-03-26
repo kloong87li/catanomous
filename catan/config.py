@@ -1,24 +1,40 @@
 from utils.gui import GUIUtils
-from utils.trackbar import CannyTrackbar
+from utils.trackbar import CannyTrackbar, ColorThreshTrackbar, HoughTrackbar
 
 import json
 
 class CVConfig(object):
 
-  _CONFIG_FILE = "config.json"
-
-  def __init__(self, reset=False):
-
-    self._is_reset = reset
+  def __init__(self, config_file="config.json", reset=False, always_reset=False):
+    self._config_file = config_file
+    self._always_reset = always_reset
 
     self._values = {
       # key: [saved, trackbar_class, is_reset]
-      "TEST": [(100, 200), CannyTrackbar, reset]
+      "BOARD_CANNY": [(100, 900), CannyTrackbar],
+      "BOARD_COLOR_WATER": [([56, 0, 30], [169, 255, 169]), ColorThreshTrackbar],
+      "BOARD_HOUGH": [((15, 60), (40, 25), 10), HoughTrackbar],
+
+      "TILE_AMPLIFY_WHEAT": [([0, 200, 200], [36, 255, 255]), ColorThreshTrackbar],
+      "TILE_AMPLIFY_BRICK": [([2, 149, 117], [9, 255, 255]), ColorThreshTrackbar],
+      "TILE_AMPLIFY_IRON": [([0, 81, 81], [46, 154, 187]), ColorThreshTrackbar],
+
+      'TILE_COLOR_DESERT': [([0, 0, 0], [1, 1, 1]), ColorThreshTrackbar],
+      'TILE_COLOR_BRICK': [([0, 146, 0], [16, 255, 255]), ColorThreshTrackbar],
+      'TILE_COLOR_IRON': [([0, 0, 123], [179, 145, 255]), ColorThreshTrackbar],
+      'TILE_COLOR_WHEAT': [([13, 0, 151], [179, 255, 255]), ColorThreshTrackbar],
+      'TILE_COLOR_WOOD': [([19, 0, 0], [27, 255, 255]), ColorThreshTrackbar],
+      'TILE_COLOR_SHEEP': [([27, 0, 0], [179, 255, 255]), ColorThreshTrackbar],
     }
+
+
+    # Append reset status
+    for key in self._values:
+      self._values[key].append(reset)
 
     # try to load from _CONFIG_FILE
     try:
-      cfile = open(self._CONFIG_FILE, 'r+')
+      cfile = open(self._config_file, 'r+')
       config_json = json.load(cfile)
 
       self._load_config_json(config_json)
@@ -31,7 +47,7 @@ class CVConfig(object):
   # Save config to a json file
   def save(self):
     try:
-      cfile = open(self._CONFIG_FILE, 'w+')
+      cfile = open(self._config_file, 'w+')
 
       config_json = self._get_config_json()
       json.dump(config_json, cfile)
@@ -45,13 +61,16 @@ class CVConfig(object):
   # Retrieve a key, launching a config GUI if necessary
   def get(self, key, img):
     if self._values[key][2]: # is_reset
-      trackbar = self._values[key][1](img, self._values[key][0])
+      trackbar = self._values[key][1](img, self._values[key][0], key)
       trackbar.show_image()
       GUIUtils.wait()
       trackbar.close_image()
       result = trackbar.get_result()
       self._values[key][0] = result
-      self._values[key][2] = False
+
+      if not self._always_reset:
+        self._values[key][2] = False
+      
       return result
     else:
       return self._values[key][0]

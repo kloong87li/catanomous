@@ -12,8 +12,10 @@ class BoardDetector(object):
 
   _KMEANS_ATTEMPTS = 2
 
-  def __init__(self, img):
-    contours = HexagonDetector().detect_hexagons(img)
+  def __init__(self, config, img):
+    self._config = config
+
+    contours = HexagonDetector(config).detect_hexagons(img)
     mean_colors = np.copy(img)
 
     # Create and process each hexagon
@@ -25,7 +27,7 @@ class BoardDetector(object):
       hex_img = CVUtils.mask_image(img, hex_mask)
 
       # Initialize detector
-      hexagon = TileDetector(c, hex_img)
+      hexagon = TileDetector(config, c, hex_img, img)
       self._hexagons.append(hexagon)
 
       # Replace hexagon with its mean color
