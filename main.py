@@ -31,7 +31,31 @@ def label_hexagons(img, hexagons):
 def detect_image(config, img, output=None):
   # load the image and resize it
   orig = cv2.imread(img)
-  img = imutils.resize(orig, width=1000)
+  catan_feature_detect(config, orig, output)
+  
+
+
+def detect_image_raspi(config, output=None):
+  from picamera.array import PiRGBArray
+  from picamera import PiCamera
+
+  # initialize the camera and grab a reference to the raw camera capture
+  camera = PiCamera()
+  rawCapture = PiRGBArray(camera)
+   
+  # allow the camera to warmup
+  time.sleep(0.1)
+   
+  # grab an image from the camera
+  camera.capture(rawCapture, format="bgr")
+  img = rawCapture.array
+
+  # catan_feature_detect(config, img, output)
+
+
+def catan_feature_detect(config, img_arr, output=None):
+  # Resize to make processing faster
+  img = imutils.resize(img_arr, width=1000)
   # ratio = orig.shape[0] / float(img.shape[0])
 
   import time
@@ -80,6 +104,7 @@ def main():
   # Use camera if specified
   if args['camera']:
     # Implement later for raspi
+    detect_image_raspi(config, args['out'])
     return
 
   # Otherwise use fixed images
