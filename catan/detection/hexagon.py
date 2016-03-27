@@ -13,8 +13,10 @@ class HexagonDetector(object):
   def __init__(self, config):
     self._config = config
 
-  _INITAL_EROSION = (4, 4)
-  _HEX_CONTOUR_SIZE = .25 # percent of total board
+  _INITAL_EROSION = (2, 2)
+  _HEX_CONTOUR_MAX = .25 # percent of total board
+  _HEX_CONTOUR_MIN = .005 # percent of total board
+
   _DIST_TRANS_PERCENT = .60 # percent of max distance
 
 
@@ -38,7 +40,23 @@ class HexagonDetector(object):
     canny_config = self._config.get("BOARD_CANNY", board)
     edges = cv2.Canny(board, canny_config[0], canny_config[1])
     edges = cv2.dilate(edges, np.ones(self._INITAL_EROSION, np.uint8))
+
+    # Use hough line transform to get hexagon edges only
+    (h, w, z) = board.shape
+    line_config = self._config.get("BOARD_HOUGH_LINE", edges)
+    lines = cv2.HoughLinesP(edges, 1, np.pi/120, line_config[0], None,
+                            line_config[1], line_config[2])
+    line_mask = np.zeros(edges.shape, np.uint8)
+    if lines is not None:
+      for line in lines:
+        # Draw lines on board
+        line = line[0]
+        pt1 = (line[0],line[1])
+        pt2 = (line[2],line[3])
+        cv2.line(line_mask, pt1, pt2, 255, 1)
+
     # isolate hexagons and erode to exaggerate
+    edges = cv2.bitwise_and(edges, line_mask)
     hexagons = CVUtils.mask_image(board, CVUtils.invert_mask(edges))
     hexagons = cv2.erode(hexagons, np.ones(self._INITAL_EROSION, np.uint8))
     # Convert to grayscale and threshold
@@ -88,7 +106,7 @@ class HexagonDetector(object):
     # Modification to above, use circles as reference for markers
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = thresh.shape
-    hough_config = self._config.get("BOARD_HOUGH", img)
+    hough_config = self._config.get("BOARD_HOUGH_CIRCLE", img)
     circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/hough_config[2],
                                 param1=hough_config[0][1],
                                 param2=hough_config[0][0],
@@ -132,8 +150,9 @@ class HexagonDetector(object):
       cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
       c = max(cnts, key=cv2.contourArea)
 
-      # only include contours that are small enough
-      if cv2.contourArea(c) < (self._HEX_CONTOUR_SIZE*h*w):
+      # only include contours that are small enough and big enough
+      area = cv2.contourArea(c)
+      if (self._HEX_CONTOUR_MIN*h*w) < area and area < (self._HEX_CONTOUR_MAX*h*w):
         result.append(c)
 
     return result

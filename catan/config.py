@@ -1,5 +1,5 @@
 from utils.gui import GUIUtils
-from utils.trackbar import CannyTrackbar, ColorThreshTrackbar, HoughTrackbar
+from utils.trackbar import CannyTrackbar, ColorThreshTrackbar, HoughCircleTrackbar, HoughLineTrackbar
 
 import json
 
@@ -13,7 +13,8 @@ class CVConfig(object):
       # key: [saved, trackbar_class, is_reset]
       "BOARD_CANNY": [(100, 900), CannyTrackbar],
       "BOARD_COLOR_WATER": [([56, 0, 30], [169, 255, 169]), ColorThreshTrackbar],
-      "BOARD_HOUGH": [((15, 60), (40, 25), 10), HoughTrackbar],
+      "BOARD_HOUGH_CIRCLE": [((15, 60), (40, 25), 10), HoughCircleTrackbar],
+      "BOARD_HOUGH_LINE": [(65, 46, 10), HoughLineTrackbar],
 
       "TILE_AMPLIFY_WHEAT": [([0, 200, 200], [36, 255, 255]), ColorThreshTrackbar],
       "TILE_AMPLIFY_BRICK": [([2, 149, 117], [9, 255, 255]), ColorThreshTrackbar],

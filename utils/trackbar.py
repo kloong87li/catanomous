@@ -235,7 +235,7 @@ class CannyTrackbar(TrackbarWindow):
 
 
 
-class HoughTrackbar(TrackbarWindow):
+class HoughCircleTrackbar(TrackbarWindow):
   _WINDOW_NAME = 'Hough Circle Threshold'
 
   # ((lower, upper), (minr, maxr), min_dist)
@@ -271,7 +271,7 @@ class HoughTrackbar(TrackbarWindow):
         'Min_Dist': defaults[2]
       }
 
-    super(HoughTrackbar, self).__init__()
+    super(HoughCircleTrackbar, self).__init__()
 
   def get_window_name(self):
     return self._WINDOW_NAME
@@ -314,5 +314,77 @@ class HoughTrackbar(TrackbarWindow):
               (self._values['Lower'], self._values['Upper']),
               (self._values['Min_R'], self._values['Max_R']),
               self._values['Min_Dist']
+            )
+
+
+
+class HoughLineTrackbar(TrackbarWindow):
+  _WINDOW_NAME = 'Hough Line Threshold'
+
+  # Image must be result of edge detection
+  # (threshold, minLineLen, maxLineGap)
+  def __init__(self, img, defaults=None, name=None, replaced_color=None):
+    if name is not None:
+      self._WINDOW_NAME = name
+
+    self._img = img
+
+    self._maxes = {
+      'Threshold': 150,
+      'MinLineLength': 100,
+      'MaxLineGap': 50,
+    }
+
+    if defaults is None:
+      self._values = {
+        'Threshold': 65,
+        'MinLineLength': 20,
+        'MaxLineGap': 30,
+      }
+    else:
+      self._values = {
+        'Threshold': defaults[0],
+        'MinLineLength': defaults[1],
+        'MaxLineGap': defaults[2],
+      }
+
+    super(HoughLineTrackbar, self).__init__()
+
+  def get_window_name(self):
+    return self._WINDOW_NAME
+
+  def on_value_change(self, value, name):
+    self._values[name] = value
+
+  def get_image(self):
+    thresh = self._values['Threshold']
+    minLineLen = self._values['MinLineLength']
+    maxLineGap = self._values['MaxLineGap']
+    print thresh, minLineLen, maxLineGap
+
+    (h, w) = self._img.shape
+    lines = cv2.HoughLinesP(self._img, 1, np.pi/180, thresh, None, minLineLen, maxLineGap)
+
+    lines_img = np.zeros(self._img.shape)
+    if lines is not None:
+      for line in lines:
+        # Draw lines on img
+        line = line[0]
+        pt1 = (line[0],line[1])
+        pt2 = (line[2],line[3])
+        cv2.line(lines_img, pt1, pt2, (255, 255, 255), 1)
+
+    return (lines_img, 700)
+
+  def get_maxes(self):
+    return self._maxes
+
+  def get_values(self):
+    return self._values
+
+  def get_result(self):
+    return (
+              self._values['Threshold'], self._values['MinLineLength'],
+              self._values['MaxLineGap']
             )
 

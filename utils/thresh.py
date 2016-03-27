@@ -4,11 +4,24 @@ import numpy as np
 
 from .cv import CVUtils
 from .gui import GUIUtils
-from .trackbar import ColorThreshTrackbar, GrayThreshTrackbar, CannyTrackbar, HoughTrackbar
+from .trackbar import (
+    ColorThreshTrackbar,
+    GrayThreshTrackbar,
+    CannyTrackbar,
+    HoughCircleTrackbar,
+    HoughLineTrackbar
+  )
 
 
-def do_hough(img):
-  hough = HoughTrackbar(img)
+def do_hough_circle(img):
+  hough = HoughCircleTrackbar(img)
+  hough.show_image()
+  GUIUtils.wait()
+  hough.close_image()
+  return hough.get_image()[0]
+
+def do_hough_line(img):
+  hough = HoughLineTrackbar(img)
   hough.show_image()
   GUIUtils.wait()
   hough.close_image()
