@@ -13,7 +13,7 @@ class CVConfig(object):
       # key: [saved, trackbar_class, is_reset]
       "BOARD_CANNY": [(100, 900), CannyTrackbar],
       "BOARD_COLOR_WATER": [([56, 0, 30], [169, 255, 169]), ColorThreshTrackbar],
-      "BOARD_HOUGH_CIRCLE": [((15, 60), (40, 25), 10), HoughCircleTrackbar],
+      "BOARD_HOUGH_CIRCLE": [((20, 60), (45, 25), 10), HoughCircleTrackbar],
       "BOARD_HOUGH_LINE": [(65, 46, 10), HoughLineTrackbar],
 
       "TILE_AMPLIFY_WHEAT": [([0, 200, 200], [36, 255, 255]), ColorThreshTrackbar],

@@ -149,6 +149,7 @@ class HexagonDetector(object):
       # detect contours in the mask and grab the largest one
       cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
       c = max(cnts, key=cv2.contourArea)
+      c = cv2.convexHull(c)
 
       # only include contours that are small enough and big enough
       area = cv2.contourArea(c)

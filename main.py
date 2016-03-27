@@ -34,7 +34,6 @@ def detect_image(config, img, output=None):
   catan_feature_detect(config, orig, output)
   
 
-
 def detect_image_raspi(config, output=None):
   from picamera.array import PiRGBArray
   from picamera import PiCamera
