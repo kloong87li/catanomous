@@ -3,7 +3,7 @@ import imutils
 import numpy as np
 from PIL import Image
 
-import argparse
+import argparse, time
 
 from utils.cv import CVUtils
 from utils.gui import GUIUtils
@@ -59,7 +59,6 @@ def catan_feature_detect(config, img_arr, output=None):
   img = imutils.resize(img_arr, width=1000)
   # ratio = orig.shape[0] / float(img.shape[0])
 
-  import time
   initial = time.time()
 
   board = BoardDetector(config, img)
