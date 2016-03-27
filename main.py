@@ -51,6 +51,7 @@ def detect_image_raspi(config, output=None):
   img = rawCapture.array
 
   # catan_feature_detect(config, img, output)
+  GUIUtils.show_image(img)
 
 
 def catan_feature_detect(config, img_arr, output=None):
