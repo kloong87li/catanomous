@@ -52,6 +52,10 @@ def detect_image_raspi(config, output=None):
   # catan_feature_detect(config, img, output)
   GUIUtils.show_image(img)
 
+  if output is not None:
+    im = Image.fromarray(img)
+    im.save(output)
+
 
 def catan_feature_detect(config, img_arr, output=None):
   # Resize to make processing faster
@@ -123,7 +127,7 @@ def main():
             # "2992x4000_2.jpg", "2992x4000_3.jpg",
             # "3232x2416_4.jpg"
     ]
-    test_dir = "images/"
+    test_dir = "images/initial_test"
     test1_imgs = [
       "test1_1.jpg",
       "test1_2.jpg",
