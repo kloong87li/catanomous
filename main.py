@@ -62,6 +62,11 @@ def detect_image_raspi(config, output=None):
 
   camera.start_preview()
 
+  time.sleep(30)
+
+  camera.stop_preview()
+  return
+
 
   # catan_feature_detect(config, img, output)
   GUIUtils.show_image(img)
