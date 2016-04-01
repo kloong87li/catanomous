@@ -44,10 +44,24 @@ def detect_image_raspi(config, output=None):
    
   # allow the camera to warmup
   time.sleep(0.1)
+
+  camera.resolution = (1280, 720)
+  camera.framerate = 30
+  # Wait for the automatic gain control to settle
+  time.sleep(2)
+  # Now fix the values
+  camera.shutter_speed = camera.exposure_speed
+  camera.exposure_mode = 'off'
+  g = camera.awb_gains
+  camera.awb_mode = 'off'
+  camera.awb_gains = g
    
   # grab an image from the camera
-  camera.capture(rawCapture, format="bgr")
-  img = rawCapture.array
+  # camera.capture(rawCapture, format="bgr")
+  # img = rawCapture.array
+
+  camera.start_preview()
+
 
   # catan_feature_detect(config, img, output)
   GUIUtils.show_image(img)
