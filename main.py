@@ -57,16 +57,8 @@ def detect_image_raspi(config, output=None):
   camera.awb_gains = g
    
   # grab an image from the camera
-  # camera.capture(rawCapture, format="bgr")
-  # img = rawCapture.array
-
-  camera.start_preview()
-
-  time.sleep(30)
-
-  camera.stop_preview()
-  return
-
+  camera.capture(rawCapture, format="bgr")
+  img = rawCapture.array
 
   # catan_feature_detect(config, img, output)
   GUIUtils.show_image(img)
