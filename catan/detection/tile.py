@@ -16,7 +16,8 @@ class TileDetector(object):
     # config_key, new color
     ("TILE_AMPLIFY_WHEAT", [0, 255, 255]),  # wheat
     ("TILE_AMPLIFY_BRICK", [0, 0, 255]),     # brick
-    ("TILE_AMPLIFY_IRON", [200, 200, 200])   # iron
+    ("TILE_AMPLIFY_IRON", [200, 200, 200]),   # iron
+    ("TILE_AMPLIFY_SHEEP", [0, 255, 0])     # wood
   ]
   _CIRCLE_SCALE = 1.1
 
@@ -91,7 +92,7 @@ class TileDetector(object):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
     circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,.9, w/2,
-                                param1=50,param2=25,minRadius=w/10,maxRadius=w/4)
+                                param1=50,param2=25,minRadius=w/15,maxRadius=w/4)
     if circles is None:
       return None
 

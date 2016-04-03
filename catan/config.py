@@ -19,6 +19,7 @@ class CVConfig(object):
       "TILE_AMPLIFY_WHEAT": [([0, 200, 200], [36, 255, 255]), ColorThreshTrackbar],
       "TILE_AMPLIFY_BRICK": [([2, 149, 117], [9, 255, 255]), ColorThreshTrackbar],
       "TILE_AMPLIFY_IRON": [([0, 81, 81], [46, 154, 187]), ColorThreshTrackbar],
+      "TILE_AMPLIFY_SHEEP": [([30, 232, 87], [112, 255, 157]), ColorThreshTrackbar],
 
       'TILE_COLOR_DESERT': [([0, 0, 0], [1, 1, 1]), ColorThreshTrackbar],
       'TILE_COLOR_BRICK': [([0, 146, 0], [16, 255, 255]), ColorThreshTrackbar],
@@ -26,6 +27,8 @@ class CVConfig(object):
       'TILE_COLOR_WHEAT': [([13, 0, 151], [179, 255, 255]), ColorThreshTrackbar],
       'TILE_COLOR_WOOD': [([19, 0, 0], [27, 255, 255]), ColorThreshTrackbar],
       'TILE_COLOR_SHEEP': [([27, 0, 0], [179, 255, 255]), ColorThreshTrackbar],
+
+      "DICE_HOUGH_CIRCLE": [((20, 60), (45, 25), 10), HoughCircleTrackbar]
     }
 
 

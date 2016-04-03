@@ -36,7 +36,7 @@ class TileNumDetector(object):
     img = CVUtils.replace_color(img, CVUtils.invert_mask(mask), [255,255,255])
     if erosion > 0:
       img = cv2.erode(img, np.ones((erosion, erosion), np.uint8))
-    img = cv2.threshold(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 125, 255, cv2.THRESH_BINARY)[1]
+    img = cv2.threshold(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 130, 255, cv2.THRESH_BINARY)[1]
 
     # Only retain large enough contours
     contours = cv2.findContours(CVUtils.invert_mask(img), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
