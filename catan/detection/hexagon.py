@@ -56,7 +56,7 @@ class HexagonDetector(object):
     #     cv2.line(line_mask, pt1, pt2, 255, 1)
 
     # isolate hexagons and erode to exaggerate
-    edges = cv2.bitwise_and(edges, line_mask)
+    # edges = cv2.bitwise_and(edges, line_mask)
     hexagons = CVUtils.mask_image(board, CVUtils.invert_mask(edges))
     hexagons = cv2.erode(hexagons, np.ones(self._INITAL_EROSION, np.uint8))
     # Convert to grayscale and threshold
