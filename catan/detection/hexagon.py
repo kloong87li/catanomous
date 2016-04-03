@@ -87,7 +87,7 @@ class HexagonDetector(object):
     floodfill_mask = np.append(floodfill_mask, row_zeros, 0)
 
     # isolate board w/ water
-    cv2.floodFill(water_mask, floodfill_mask, (h/2, w/2), 255)
+    cv2.floodFill(water_mask, floodfill_mask, (w/2, h/2), 255)
     board = CVUtils.mask_image(img, water_mask)
 
     # remove water
