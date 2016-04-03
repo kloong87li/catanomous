@@ -42,18 +42,18 @@ class HexagonDetector(object):
     edges = cv2.dilate(edges, np.ones(self._INITAL_EROSION, np.uint8))
 
     # Use hough line transform to get hexagon edges only
-    (h, w, z) = board.shape
-    line_config = self._config.get("BOARD_HOUGH_LINE", edges)
-    lines = cv2.HoughLinesP(edges, 1, np.pi/120, line_config[0], None,
-                            line_config[1], line_config[2])
-    line_mask = np.zeros(edges.shape, np.uint8)
-    if lines is not None:
-      for line in lines:
-        # Draw lines on board
-        line = line[0]
-        pt1 = (line[0],line[1])
-        pt2 = (line[2],line[3])
-        cv2.line(line_mask, pt1, pt2, 255, 1)
+    # (h, w, z) = board.shape
+    # line_config = self._config.get("BOARD_HOUGH_LINE", edges)
+    # lines = cv2.HoughLinesP(edges, 1, np.pi/120, line_config[0], None,
+    #                         line_config[1], line_config[2])
+    # line_mask = np.zeros(edges.shape, np.uint8)
+    # if lines is not None:
+    #   for line in lines:
+    #     # Draw lines on board
+    #     line = line[0]
+    #     pt1 = (line[0],line[1])
+    #     pt2 = (line[2],line[3])
+    #     cv2.line(line_mask, pt1, pt2, 255, 1)
 
     # isolate hexagons and erode to exaggerate
     edges = cv2.bitwise_and(edges, line_mask)

@@ -140,11 +140,11 @@ def main():
     ]
     test_dir = "images/"
     test_imgs = [
-      "test1_1.png",
+      # "test1_1.png",
       # "test1_2.png",
       # "test1_3.png",
       # "test1_4.png",
-      # "test2_1.png",
+      "test2_1.png",
       # "test2_2.png",
       # "test2_3.png",
       # "test3_1.png",
