@@ -138,30 +138,21 @@ def main():
             # "2992x4000_2.jpg", "2992x4000_3.jpg",
             # "3232x2416_4.jpg"
     ]
-    test_dir = "images/initial_test"
-    test1_imgs = [
-      "test1_1.jpg",
-      "test1_2.jpg",
-      "test1_3.jpg",
-      "test1_4.jpg",
-      "test1_5.jpg",
-      "test1_6.jpg",
+    test_dir = "images/"
+    test_imgs = [
+      "test1_1.png",
+      # "test1_2.png",
+      # "test1_3.png",
+      # "test1_4.png",
+      # "test2_1.png",
+      # "test2_2.png",
+      # "test2_3.png",
+      # "test3_1.png",
+      # "test3_2.png",
+      # "test3_3.png",
     ]
-    test2_imgs = [
-      "test2_1.jpg",
-      "test2_2.jpg",
-    ]
-    test3_imgs = [
-      "test3_1.jpg",
-      "test3_2.jpg",
-    ]
-    test4_imgs = [
-      "test4_1.jpg",
-      "test4_2.jpg",
-      "test4_3.jpg",
-    ]
-    for img in test2_imgs:
-      print img
+
+    for img in test_imgs:
       detect_image(config, test_dir + img)
 
 
