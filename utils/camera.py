@@ -38,7 +38,7 @@ class Camera(object):
   def capture(self):
     # grab an image from the camera
     self._cam.capture(self._rawCapture, format="bgr")
-    return rawCapture.array
+    return self._rawCapture.array
 
   def set_setting(self, key, value):
     self._config.set_cam(key, value)
