@@ -31,6 +31,18 @@ class CVConfig(object):
       "DICE_HOUGH_CIRCLE": [((20, 60), (45, 25), 10), HoughCircleTrackbar]
     }
 
+    self._camera_values = {
+      'AWB': (1.0, 1.0),
+      'BRIGHTNESS': 0,
+      'CONTRAST': 0,
+      'EXPOSURE_COMPENSATION': 0,
+      'ISO': 0 ,
+      'RESOLUTION': (1280, 720),
+      'SATURATION': 0,
+      'SHARPNESS': 0, 
+      'ZOOM': (0.0, 0.0, 1.0, 1.0)
+    }
+
 
     # Append reset status
     for key in self._values:
@@ -95,6 +107,39 @@ class CVConfig(object):
       ret[key] = value[0]
     return ret
 
+
+
+  def get_cam(self, key):
+    return self._camera_values[key]
+
+  def set_cam(self, key, value):
+    self._camera_values[key] = value
+
+  def get_cam_all(self):
+    return self._camera_values
+
+  def load_cam_file(self, filename):
+    try:
+      cfile = open(filename, 'r+')
+      config_json = json.load(cfile)
+
+      self._camera_values = config_json
+
+      cfile.close()
+    except IOError as e:
+      print "!![CONFIG] Camera config file not found."
+
+
+  def save_cam_file(self, filename):
+    try:
+      cfile = open(filename, 'w+')
+
+      json.dump(self._camera_values, cfile)
+
+      cfile.close()
+    except IOError as e:
+      print "!! [CONFIG] IOError occurred while saving camera settings. Settings lost."
+    return
 
 
 

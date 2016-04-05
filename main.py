@@ -35,37 +35,21 @@ def detect_image(config, img, output=None):
   
 
 def detect_image_raspi(config, output=None):
-  from picamera.array import PiRGBArray
-  from picamera import PiCamera
+  from util.camera import Camera
 
-  # initialize the camera and grab a reference to the raw camera capture
-  camera = PiCamera()
-  rawCapture = PiRGBArray(camera)
+  cam = Camera(config)
+  cam.start()
+  img = cam.capture()
    
-  # allow the camera to warmup
-  time.sleep(0.1)
-
-  camera.resolution = (1280, 720)
-  camera.framerate = 30
-  # Wait for the automatic gain control to settle
-  time.sleep(2)
-  # Now fix the values
-  camera.shutter_speed = camera.exposure_speed
-  camera.exposure_mode = 'off'
-  g = camera.awb_gains
-  camera.awb_mode = 'off'
-  camera.awb_gains = g
-   
-  # grab an image from the camera
-  camera.capture(rawCapture, format="bgr")
-  img = rawCapture.array
-
   # catan_feature_detect(config, img, output)
   GUIUtils.show_image(img)
 
   if output is not None:
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     im = Image.fromarray(img)
     im.save(output)
+
+  cam.stop()
 
 
 def catan_feature_detect(config, img_arr, output=None):
@@ -97,7 +81,7 @@ def main():
                      help='Input image to analyze. If not specified, will run hardcoded test images.')
   parser.add_argument('-out', nargs='?', type=str,
                      help='Output image. If not specified, will display result in GUI.')
-  parser.add_argument('--config', nargs='?', type=str, default="config.json",
+  parser.add_argument('--config', nargs='?', type=str, default="config/config.json",
                      help='Config file to load/save.')
   parser.add_argument('--camera', '-c', action="store_true", default=False,
                      help='Whether or not to use Raspi camera.')
