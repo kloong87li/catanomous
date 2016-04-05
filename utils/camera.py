@@ -17,7 +17,7 @@ class Camera(object):
   def start(self):
     # initialize the camera and grab a reference to the raw camera capture
     self._cam = PiCamera()
-    self._rawCapture = PiRGBArray(self._camera)
+    self._rawCapture = PiRGBArray(self._cam)
     self._cam.framerate = 30
     self._cam.awb_mode = 'off'
 
