@@ -35,7 +35,7 @@ def detect_image(config, img, output=None):
   
 
 def detect_image_raspi(config, output=None):
-  from util.camera import Camera
+  from utils.camera import Camera
 
   cam = Camera(config)
   cam.start()
