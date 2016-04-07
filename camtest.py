@@ -1,4 +1,4 @@
-#from utils.camera import Camera
+from utils.camera import Camera
 from catan.config import CVConfig
 
 from utils.gui import GUIUtils
@@ -20,7 +20,7 @@ def process_token(token, camera):
 
 def main():
   config = CVConfig("config/config.json")
-  camera = None # Camera(config, "config/camera.json")
+  camera = Camera(config, "config/camera.json")
 
   try:
     camera.start()
@@ -31,8 +31,8 @@ def main():
 
       if token == 'P':
         pass
-        #img = camera.capture()
-        #GUIUtils.show_image(img)
+        img = camera.capture()
+        GUIUtils.show_image(img)
       elif token == 'X':
         break
       elif token == 'V':
