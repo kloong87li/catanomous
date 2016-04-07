@@ -35,7 +35,8 @@ def main():
 
       if token == 'P':
         img = camera.capture()
-        GUIUtils.show_image(img, "Preview")
+	GUIUtils.update_image(img)
+	cv2.waitKey(100)
       elif token == 'X':
         break
       elif token == 'V':
@@ -49,7 +50,9 @@ def main():
         CVUtils.save_img(img, path)
       else:
         process_token(token, camera)
-
+	img = camera.capture()
+	GUIUtils.update_image(img)
+	cv2.waitKey(100)	
 
   finally:
     camera.stop()
