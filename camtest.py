@@ -45,7 +45,8 @@ def main():
           print key, ": ", settings[key]
       elif token == 'S':
         img = camera.capture()
-        GUIUtils.show_image(img, "Preview")
+        GUIUtils.update_image(img)
+	cv2.waitKey(100)
         path = raw_input("Path: ")
         CVUtils.save_img(img, path)
       else:
