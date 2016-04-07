@@ -54,7 +54,7 @@ def detect_image_raspi(config, output=None):
 
 def catan_feature_detect(config, img_arr, output=None):
   # Resize to make processing faster
-  img = imutils.resize(img_arr, width=1000)
+  img = img_arr #imutils.resize(img_arr, width=1000)
   # ratio = orig.shape[0] / float(img.shape[0])
 
   initial = time.time()
