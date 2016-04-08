@@ -4,6 +4,8 @@ from catan.config import CVConfig
 from utils.gui import GUIUtils
 from utils.cv import CVUtils
 
+import cv2
+
 
 
 def process_token(token, camera):

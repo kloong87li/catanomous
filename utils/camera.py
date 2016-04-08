@@ -51,7 +51,7 @@ class Camera(object):
     elif key == "EXPOSURE_COMPENSATION":
       self._cam.exposure_compensation = value
     elif key == "ISO":
-      self._cam.ISO = value
+      self._cam.iso = value
     elif key == "RESOLUTION":
       self._cam.resolution = value
     elif key == "SATURATION":
