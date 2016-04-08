@@ -2,6 +2,7 @@ import cv2
 import imutils
 import numpy as np
 
+from PIL import Image
 
 class CVUtils(object):
 
@@ -54,6 +55,11 @@ class CVUtils(object):
   def convert_single_color(color, conv_code):
     return cv2.cvtColor([[color]], conv_code)[0, 0]
 
+  @staticmethod
+  def save_img(img, path):
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    im = Image.fromarray(img)
+    im.save(path)
 
 
 

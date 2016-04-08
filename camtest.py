@@ -2,6 +2,8 @@ from utils.camera import Camera
 from catan.config import CVConfig
 
 from utils.gui import GUIUtils
+from utils.cv import CVUtils
+
 
 
 def process_token(token, camera):
@@ -31,13 +33,20 @@ def main():
 
       if token == 'P':
         img = camera.capture()
-        GUIUtils.show_image(img)
+        GUIUtils.show_image(img, "Preview")
+        cv2.destroyWindow("Preview")
       elif token == 'X':
         break
       elif token == 'V':
         settings = config.get_cam_all()
         for key in settings:
           print key, ": ", settings[key]
+      elif token == 'S':
+        img = camera.capture()
+        GUIUtils.show_image(img, "Preview")
+        cv2.destroyWindow("Preview")
+        path = raw_input("Path: ")
+        CVUtils.save_img(img, path)
       else:
         process_token(token, camera)
 

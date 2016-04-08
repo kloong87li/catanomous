@@ -45,9 +45,7 @@ def detect_image_raspi(config, output=None):
   GUIUtils.show_image(img)
 
   if output is not None:
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    im = Image.fromarray(img)
-    im.save(output)
+    CVUtils.save_img(img, output)
 
   cam.stop()
 
@@ -69,8 +67,7 @@ def catan_feature_detect(config, img_arr, output=None):
   if output is None:
     GUIUtils.show_image(img)
   else:
-    im = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB), 'RGB')
-    im.save(output)
+    CVUtils.save_img(img, output)
 
 
 def main():
