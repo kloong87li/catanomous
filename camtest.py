@@ -36,7 +36,6 @@ def main():
       if token == 'P':
         img = camera.capture()
         GUIUtils.show_image(img, "Preview")
-        cv2.destroyWindow("Preview")
       elif token == 'X':
         break
       elif token == 'V':
@@ -46,7 +45,6 @@ def main():
       elif token == 'S':
         img = camera.capture()
         GUIUtils.show_image(img, "Preview")
-        cv2.destroyWindow("Preview")
         path = raw_input("Path: ")
         CVUtils.save_img(img, path)
       else:
