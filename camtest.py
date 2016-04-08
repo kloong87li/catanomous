@@ -30,7 +30,6 @@ def main():
       token = raw_input("Input: ")
 
       if token == 'P':
-        pass
         img = camera.capture()
         GUIUtils.show_image(img)
       elif token == 'X':
@@ -45,7 +44,6 @@ def main():
 
   finally:
     camera.stop()
-    pass
 
 
 
