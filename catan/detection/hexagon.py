@@ -13,11 +13,11 @@ class HexagonDetector(object):
   def __init__(self, config):
     self._config = config
 
-  _INITAL_EROSION = (2, 2)
+  _INITAL_EROSION = (1, 1)
   _HEX_CONTOUR_MAX = .25 # percent of total board
   _HEX_CONTOUR_MIN = .005 # percent of total board
 
-  _DIST_TRANS_PERCENT = .60 # percent of max distance
+  _DIST_TRANS_PERCENT = .75 # percent of max distance
 
 
   # Returns list of hexagon contours
@@ -39,7 +39,7 @@ class HexagonDetector(object):
     # get edges using canny edge detction
     canny_config = self._config.get("BOARD_CANNY", board)
     edges = cv2.Canny(board, canny_config[0], canny_config[1])
-    edges = cv2.dilate(edges, np.ones(self._INITAL_EROSION, np.uint8))
+    edges = cv2.dilate(edges, np.ones((3,3), np.uint8))
 
     # Use hough line transform to get hexagon edges only
     # (h, w, z) = board.shape
@@ -61,7 +61,7 @@ class HexagonDetector(object):
     hexagons = cv2.erode(hexagons, np.ones(self._INITAL_EROSION, np.uint8))
     # Convert to grayscale and threshold
     gray = cv2.cvtColor(hexagons, cv2.COLOR_BGR2GRAY)
-    thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)[1]
+    thresh = cv2.threshold(gray, 2, 255, cv2.THRESH_BINARY)[1]
     # Get markers from watershed algorithm
     markers = self._get_watershed_markers(hexagons, thresh)
     # Get countours
@@ -97,7 +97,7 @@ class HexagonDetector(object):
     # Taken from http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_imgproc/py_watershed/py_watershed.html
 
     # Get area that we are sure is BG
-    sure_bg = cv2.dilate(thresh, np.ones(self._INITAL_EROSION, np.uint8), iterations=3)
+    sure_bg = cv2.dilate(thresh, np.ones((4, 4), np.uint8), iterations=5)
     # Get area that we are sure is FG
     dist_transform = cv2.distanceTransform(thresh, cv2.DIST_L1, 3)
     ret, sure_fg = cv2.threshold(dist_transform, self._DIST_TRANS_PERCENT*dist_transform.max(), 255, 0)
@@ -115,10 +115,13 @@ class HexagonDetector(object):
     for circle in circles[0]:
       # Draw circles on mask
       cv2.circle(circle_mask, (circle[0], circle[1]), np.uint8(circle[2]), 255, thickness=-1)
+    # dilate to make circles bigger
+    # circle_mask = cv2.dilate(circle_mask, np.ones(self._INITAL_EROSION, np.uint8), iterations=2)
     sure_fg = cv2.bitwise_or(sure_fg, circle_mask)
 
     # Find region that we are not sure about
     unknown = cv2.subtract(sure_bg, sure_fg)
+
     # Label Markers
     ret, markers = cv2.connectedComponents(sure_fg)
     # Add one to all labels so that sure_bg area is not 0, but 1
@@ -126,7 +129,7 @@ class HexagonDetector(object):
     # Now, mark the region of unknown with zero and region of known with non-zero
     markers[unknown == 255] = 0
     # Get markers
-    markers = cv2.watershed(img, markers)
+    markers = cv2.watershed(cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR), markers)
     return markers
 
   def _get_hexagon_contours(self, img, markers):

@@ -195,7 +195,7 @@ class CannyTrackbar(TrackbarWindow):
 
     self._maxes = {
       'Lower': 1024,
-      'Upper': 1024,
+      'Upper': 2048,
     }
 
     if defaults is None:

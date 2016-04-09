@@ -91,8 +91,8 @@ class TileDetector(object):
     img = cv2.erode(cv2.medianBlur(self._hex_roi, 3), np.ones((1, 1), np.uint8))
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
-    circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,.9, w/2,
-                                param1=50,param2=25,minRadius=w/15,maxRadius=w/4)
+    circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1, w*3/4,
+                                param1=60,param2=24,minRadius=w/10,maxRadius=w/5)
     if circles is None:
       return None
 
