@@ -13,7 +13,7 @@ class TileNumDetector(object):
 
   _VALID_NUMS = ['2', '3', '4', '5', '6', '8', '9', '10', '11', '12']
 
-  def __init__(self, img):
+  def __init__(self):
     pass
 
   # detects number given the img, circle mask, and circle tuple

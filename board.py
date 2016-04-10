@@ -28,10 +28,10 @@ def label_hexagons(img, hexagons):
       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
 
-def detect_image(config, img, output=None):
+def detect_image(config, img, output=None, load_hex=False, save_hex=False):
   # load the image and resize it
   orig = cv2.imread(img)
-  catan_feature_detect(config, orig, output)
+  catan_feature_detect(config, orig, output, load_hex, save_hex)
   
 
 def detect_image_raspi(config, output=None):
@@ -50,19 +50,23 @@ def detect_image_raspi(config, output=None):
   cam.stop()
 
 
-def catan_feature_detect(config, img_arr, output=None):
+def catan_feature_detect(config, img_arr, output=None, load_hex=False, save_hex=False):
   # Resize to make processing faster
   img = img_arr #imutils.resize(img_arr, width=1000)
-  # ratio = orig.shape[0] / float(img.shape[0])
+  hex_config = "config/hexagons.npy"
+
+  if load_hex:
+    config.load_hex_config(hex_config)
 
   initial = time.time()
-
   board = BoardDetector(config, img)
-  hexagons = board.get_hexagons()
-
   print "Time:", time.time() - initial
 
-  label_hexagons(img, hexagons)
+  label_hexagons(img, board._hexagons)
+
+  if save_hex:
+    config.set_hexagons(board.get_hex_contours())
+    config.save_hex_config(hex_config)
 
   if output is None:
     GUIUtils.show_image(img)
@@ -90,6 +94,10 @@ def main():
                      help='Throw away config i.e do not save.')
   parser.add_argument('--no_config', action="store_true", default=False,
                      help='Use the hardcoded defaults instead of loading a config file.')
+  parser.add_argument('-lh', action="store_true", default=False,
+                     help='Load saved hexagon configuration')
+  parser.add_argument('-sh', action="store_true", default=False,
+                     help='Save hexagon configuration after detection')
   args = vars(parser.parse_args())
 
 
@@ -125,10 +133,10 @@ def main():
     test_dir = "images/"
     test_imgs = [
       "test1_1.png",
-      # "test1_2.png",
-      # "test1_3.png",
+      "test1_2.png",
+      "test1_3.png",
       # "test1_4.png",
-      # "test2_1.png",
+      "test2_1.png",
       # "test2_2.png",
       # "test2_3.png",
       # "test3_1.png",
@@ -136,8 +144,10 @@ def main():
       # "test3_3.png",
     ]
 
+    lh = args['lh']
+    sh = args['sh']
     for img in test_imgs:
-      detect_image(config, test_dir + img)
+      detect_image(config, test_dir + img, args['out'], lh, sh)
 
 
   # Save config

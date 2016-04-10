@@ -15,7 +15,10 @@ class BoardDetector(object):
   def __init__(self, config, img):
     self._config = config
 
-    contours = HexagonDetector(config).detect_hexagons(img)
+    contours = config.get_hexagons()
+    if contours is None:
+      contours = HexagonDetector(config).detect_hexagons(img)
+
     mean_colors = np.copy(img)
 
     # Create and process each hexagon
@@ -48,9 +51,8 @@ class BoardDetector(object):
       h.detect_resource(kmeans)
       h.detect_number()
 
-
-  def get_hexagons(self):
-    return self._hexagons
+  def get_hex_contours(self):
+    return [h.get_contour() for h in self._hexagons]
 
   def detect_properties(self, img):
     return

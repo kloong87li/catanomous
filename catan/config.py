@@ -2,6 +2,7 @@ from utils.gui import GUIUtils
 from utils.trackbar import CannyTrackbar, ColorThreshTrackbar, HoughCircleTrackbar, HoughLineTrackbar
 
 import json
+import numpy as np
 
 class CVConfig(object):
 
@@ -68,6 +69,8 @@ class CVConfig(object):
       'SHARPNESS': 0, 
       'ZOOM': (0.0, 0.0, 1.0, 1.0)
     }
+
+    self._hex_contours = None
 
     # Append reset status
     for key in self._values:
@@ -141,15 +144,18 @@ class CVConfig(object):
   #################################
 
   def get_hexagons(self):
-    return
+    return self._hex_contours
 
-  def set_hexagons(self):
-    return
+  def set_hexagons(self, hexs):
+    self._hex_contours = hexs
 
   def load_hex_config(self, filename):
+    cnts = np.load(filename)
+    self._hex_contours = cnts
     return
 
   def save_hex_config(self, filename):
+    np.save(filename, self._hex_contours)
     return
 
 
