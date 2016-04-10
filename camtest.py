@@ -16,28 +16,34 @@ def process_token(token, camera):
   elif token == 'Zoom':
     print "Not supported yet."
   elif token == 'Resolution':
-    print "Not supported yet."
+    val1 = raw_input("W: ")
+    val2 = raw_input("H: ")
+    camera.set_setting(token, (int(val1), int(val2)))
   else:
     value = raw_input("New value: ")
     camera.set_setting(token, int(value))
 
 
 def main():
+  cam_config = "config/camera.json"
   config = CVConfig("config/config.json")
-  camera = Camera(config, "config/camera.json")
+  config.load_cam_config(cam_config)
+
+  camera = Camera(config)
 
   try:
     camera.start()
 
     while (True):
-      print "Enter a camera setting to change. (or 'P' to preview, 'X' to quit, 'V' to see current settings)"
+      print "Enter a camera setting to change. (or 'P' to preview, 'X' to quit, 'V' to see current settings, 'S' to save image)"
       token = raw_input("Input: ")
 
       if token == 'P':
         img = camera.capture()
-	GUIUtils.update_image(img)
-	cv2.waitKey(100)
+        GUIUtils.update_image(img)
+        cv2.waitKey(100)
       elif token == 'X':
+        config.save_cam_config(cam_config)
         break
       elif token == 'V':
         settings = config.get_cam_all()
@@ -46,14 +52,14 @@ def main():
       elif token == 'S':
         img = camera.capture()
         GUIUtils.update_image(img)
-	cv2.waitKey(100)
+        cv2.waitKey(100)
         path = raw_input("Path: ")
         CVUtils.save_img(img, path)
       else:
         process_token(token, camera)
-	img = camera.capture()
-	GUIUtils.update_image(img)
-	cv2.waitKey(100)	
+        img = camera.capture()
+        GUIUtils.update_image(img)
+        cv2.waitKey(100)  
 
   finally:
     camera.stop()

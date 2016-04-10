@@ -5,10 +5,36 @@ import json
 
 class CVConfig(object):
 
-  def __init__(self, config_file, reset=False, always_reset=False, no_file=False):
-    self._config_file = config_file
+  @staticmethod
+  def load_json(filename):
+    # try to load from _CONFIG_FILE
+    cfile = None
+    try:
+      cfile = open(filename, 'r+')
+      config_json = json.load(cfile)
+
+      return config_json
+    except IOError as e:
+      print "!! [CONFIG] No config file found: " + filename
+      return None
+
+  @staticmethod
+  def save_json(filename, json_obj):
+    try:
+      cfile = open(filename, 'w+')
+      json.dump(json_obj, cfile)
+
+      cfile.close()
+    except IOError as e:
+      print "!! [CONFIG] IOError occurred while saving settings. Settings lost: " + filename
+    return
+
+
+
+  def __init__(self, config_file, reset=False, always_reset=False):
     self._always_reset = always_reset
 
+    # Initialize defaults
     self._values = {
       # key: [saved, trackbar_class, is_reset]
       "BOARD_CANNY": [(100, 900), CannyTrackbar],
@@ -43,40 +69,30 @@ class CVConfig(object):
       'ZOOM': (0.0, 0.0, 1.0, 1.0)
     }
 
-
     # Append reset status
     for key in self._values:
       self._values[key].append(reset)
+    
 
-    if no_file:
-      print "!! [CONFIG] Not using a config file. Using hardcoded defaults instead."
+  #################################
+  # CV Config related functions   #
+  #################################
+
+  def load_cv_config(self, filename):
+    cjson = CVConfig.load_json(filename)
+    if cjson is None:
       return
 
-    # try to load from _CONFIG_FILE
-    try:
-      cfile = open(self._config_file, 'r+')
-      config_json = json.load(cfile)
-
-      self._load_config_json(config_json)
-
-      cfile.close()
-    except IOError as e:
-      print "!! [CONFIG] No config file found, using hardcoded defaults."
-
-
-  # Save config to a json file
-  def save(self):
-    try:
-      cfile = open(self._config_file, 'w+')
-
-      config_json = self._get_config_json()
-      json.dump(config_json, cfile)
-
-      cfile.close()
-    except IOError as e:
-      print "!! [CONFIG] IOError occurred while saving settings. Settings lost."
+    for key, value in cjson.iteritems():
+      self._values[key][0] = value
     return
 
+  def save_cv_config(self, filename):
+    cjson = {}
+    for key, value in self._values.iteritems():
+      cjson[key] = value[0]
+    
+    CVConfig.save_json(filename, cjson)
 
   # Retrieve a key, launching a config GUI if necessary
   def get(self, key, img):
@@ -96,18 +112,9 @@ class CVConfig(object):
       return self._values[key][0]
 
 
-  def _load_config_json(self, config_json):
-    for key, value in config_json.iteritems():
-      self._values[key][0] = value
-    return
-
-  def _get_config_json(self):
-    ret = {}
-    for key, value in self._values.iteritems():
-      ret[key] = value[0]
-    return ret
-
-
+  #################################
+  # Cam Config related functions  #
+  #################################
 
   def get_cam(self, key):
     return self._camera_values[key]
@@ -118,30 +125,32 @@ class CVConfig(object):
   def get_cam_all(self):
     return self._camera_values
 
-  def load_cam_file(self, filename):
-    try:
-      cfile = open(filename, 'r+')
-      config_json = json.load(cfile)
+  def load_cam_config(self, filename):
+    cjson = CVConfig.load_json(filename)
 
-      self._camera_values = config_json
+    if cjson is not None:
+      self._camera_values = cjson
 
-      cfile.close()
-    except IOError as e:
-      print "!![CONFIG] Camera config file not found."
+  def save_cam_config(self, filename):
+    CVConfig.save_json(filename, self._camera_values)
 
 
-  def save_cam_file(self, filename):
-    try:
-      cfile = open(filename, 'w+')
 
-      json.dump(self._camera_values, cfile)
+  #################################
+  # Hex Config related functions  #
+  #################################
 
-      cfile.close()
-    except IOError as e:
-      print "!! [CONFIG] IOError occurred while saving camera settings. Settings lost."
+  def get_hexagons(self):
     return
 
+  def set_hexagons(self):
+    return
 
+  def load_hex_config(self, filename):
+    return
+
+  def save_hex_config(self, filename):
+    return
 
 
 

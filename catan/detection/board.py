@@ -52,6 +52,8 @@ class BoardDetector(object):
   def get_hexagons(self):
     return self._hexagons
 
+  def detect_properties(self, img):
+    return
 
   def _kmeans(self, img):
     Z = img.reshape((-1,3))

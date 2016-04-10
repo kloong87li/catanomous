@@ -94,11 +94,14 @@ def main():
 
 
   # Initialize config
-  config = CVConfig(args['config'], args['reset'], args['always_reset'], args['no_config'])
+  config = CVConfig(args['config'], args['reset'], args['always_reset'])
+  if not args['no_config']:
+    config.load_cv_config(args["config"])
 
   # Use camera if specified
   if args['camera']:
     # Implement later for raspi
+    config.load_cam_config("config/camera.json")
     detect_image_raspi(config, args['out'])
     return
 
@@ -139,11 +142,9 @@ def main():
 
   # Save config
   if not args['toss_config']:
-    config.save()
+    config.save_cv_config(args["config"])
   else:
     print "!! [CONFIG] Not saving configuration file."
-
-
 
 
 

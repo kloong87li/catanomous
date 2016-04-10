@@ -8,10 +8,9 @@ import time
 
 class Camera(object):
 
-  def __init__(self, config, cam_file="config/camera.json"):
+  def __init__(self, config):
     self._cam = None
     self._rawCapture = None
-    self._cam_file = cam_file
     self._config = config
 
 
@@ -20,8 +19,6 @@ class Camera(object):
     self._cam = PiCamera()
     self._cam.framerate = 30
     self._cam.awb_mode = 'off'
-
-    self._config.load_cam_file(self._cam_file)
      
     # allow the camera to warmup
     time.sleep(0.1)
@@ -41,7 +38,6 @@ class Camera(object):
     return rawCapture.array
 
   def set_setting(self, key, value):
-    self._config.set_cam(key, value)
     if key == "AWB":
       self._cam.awb_gains = value
     elif key == "BRIGHTNESS":
@@ -62,10 +58,13 @@ class Camera(object):
       self._cam.zoom = value
     else:
       print "!! [CONFIG] Invalid key for camera configuration."
+      return
+      
+    self._config.set_cam(key, value)
+
 
   def stop(self):
     self._cam.close()
-    self._config.save_cam_file(self._cam_file)
     return
 
   def start_preview(self):

@@ -153,6 +153,7 @@ class HexagonDetector(object):
       cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
       c = max(cnts, key=cv2.contourArea)
       c = cv2.convexHull(c)
+      c = cv2.approxPolyDP(c, 3, True)
 
       # only include contours that are small enough and big enough
       area = cv2.contourArea(c)
