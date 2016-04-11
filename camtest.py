@@ -5,6 +5,7 @@ from utils.gui import GUIUtils
 from utils.cv import CVUtils
 
 import cv2
+import imutils
 
 
 
@@ -23,6 +24,11 @@ def process_token(token, camera):
     value = raw_input("New value: ")
     camera.set_setting(token, int(value))
 
+def get_picture(camera):
+  img = imutils.resize(camera.capture(), width=1200)
+  GUIUtils.update_image(img)
+  cv2.waitKey(100)
+  return img
 
 def main():
   cam_config = "config/camera.json"
@@ -39,9 +45,7 @@ def main():
       token = raw_input("Input: ")
 
       if token == 'P':
-        img = camera.capture()
-        GUIUtils.update_image(img)
-        cv2.waitKey(100)
+        get_picture(camera)
       elif token == 'X':
         config.save_cam_config(cam_config)
         break
@@ -50,16 +54,12 @@ def main():
         for key in settings:
           print key, ": ", settings[key]
       elif token == 'S':
-        img = camera.capture()
-        GUIUtils.update_image(img)
-        cv2.waitKey(100)
+        img = get_picture(camera)
         path = raw_input("Path: ")
         CVUtils.save_img(img, path)
       else:
         process_token(token, camera)
-        img = camera.capture()
-        GUIUtils.update_image(img)
-        cv2.waitKey(100)  
+        get_picture(camera)
 
   finally:
     camera.stop()
