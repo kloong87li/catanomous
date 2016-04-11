@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from math import sqrt
 
 from utils.cv import CVUtils
 from utils.gui import GUIUtils
@@ -69,6 +70,24 @@ class TileDetector(object):
     else:
       return False
 
+  def detect_properties(self, new_img):
+    # Compute top most point
+    vertices = [v[0] for v in self._contour]
+    (top_i, top_v) = min(enumerate(vertices), key=lambda x: x[1][1])
+
+    prop_points = []
+    prev = None
+    (h, w, d) = self._orig_hex.shape
+    for i in xrange(len(vertices)):
+      v = vertices[(top_i + i) % len(vertices)]
+      
+      if prev is None or self._point_distance(prev, v) > h/3:
+        prop_points.append(v)
+        prev = v
+
+    # return list of properties
+    return prop_points
+
   def get_contour(self):
     return self._contour
 
@@ -125,4 +144,7 @@ class TileDetector(object):
   def _get_roi(self, img):
     (x, y, w, h) = cv2.boundingRect(self._contour)
     return img[y:y+h, x:x+w]
+
+  def _point_distance(self, pt1, pt2):
+    return sqrt((pt1[0] - pt2[0])**2 + (pt1[1] - pt2[1])**2)
 

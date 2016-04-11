@@ -19,6 +19,7 @@ class BoardDetector(object):
     if contours is None:
       contours = HexagonDetector(config).detect_hexagons(img)
 
+    # img = imutils.resize(img_arr, width=1000)
     mean_colors = np.copy(img)
 
     # Create and process each hexagon
@@ -54,8 +55,13 @@ class BoardDetector(object):
   def get_hex_contours(self):
     return [h.get_contour() for h in self._hexagons]
 
-  def detect_properties(self, img):
-    return
+  def detect_properties(self, new_board_img):
+    tiles = []
+    for tile in self._hexagons:
+      properties = tile.detect_properties(new_board_img)
+      tiles.append((tile, properties))
+    return tiles
+
 
   def _kmeans(self, img):
     Z = img.reshape((-1,3))

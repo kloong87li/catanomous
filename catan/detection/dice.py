@@ -8,14 +8,13 @@ from utils.gui import GUIUtils
 
 class DiceDetector(object):
 
-  def __init__(self, config, img):
+  def __init__(self, config):
     self._config = config
-    self._img = img
 
-  def detect_roll(self):
-    (h, w, z) = self._img.shape
+  def detect_roll(self, img):
+    (h, w, z) = img.shape
     gray = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
-    hough_config = self._config.get("DICE_HOUGH_CIRCLE", self._img)
+    hough_config = self._config.get("DICE_HOUGH_CIRCLE", img)
     circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/hough_config[2],
                                 param1=hough_config[0][1],
                                 param2=hough_config[0][0],
