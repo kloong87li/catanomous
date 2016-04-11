@@ -25,8 +25,8 @@ def process_token(token, camera):
     camera.set_setting(token, int(value))
 
 def get_picture(camera):
-  img = imutils.resize(camera.capture(), width=1200)
-  GUIUtils.update_image(img)
+  img = camera.capture()
+  GUIUtils.update_image(imutils.resize(img, width=1200))
   cv2.waitKey(100)
   return img
 
