@@ -13,9 +13,9 @@ def process_token(token, camera):
     val1 = raw_input("Val1: ")
     val2 = raw_input("Val2: ")
     camera.set_setting(token, (float(val1), float(val2)))
-  elif token == 'Zoom':
+  elif token == 'ZOOM':
     print "Not supported yet."
-  elif token == 'Resolution':
+  elif token == 'RESOLUTION':
     val1 = raw_input("W: ")
     val2 = raw_input("H: ")
     camera.set_setting(token, (int(val1), int(val2)))
