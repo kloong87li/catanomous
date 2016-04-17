@@ -17,9 +17,9 @@ class TileColorDetector(object):
     (h, w, z) = roi.shape
 
     # Get mean for this hexagon
-    mean = roi[h/2, w/2]
+    mean = roi[h/2][w/2]
     hsv_mean = cv2.cvtColor(np.array([[mean]], np.uint8), cv2.COLOR_BGR2HSV).flatten()
-    
+
     # Check each color bound
     for key in self._TILE_COLORS:
       thresh = self._config.get("TILE_COLOR_"+key, kmeans_res)
@@ -32,7 +32,7 @@ class TileColorDetector(object):
   def _color_in_range(self, value, (lower, upper)):
     res = True
     for i in xrange(len(value)):
-      res = res and (lower[i] <= value[i] and value[i] < upper[i])
+      res = res and (lower[i] < value[i] and value[i] <= upper[i])
     return res
 
 

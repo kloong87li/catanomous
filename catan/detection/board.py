@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import imutils
 
 from utils.cv import CVUtils
 from utils.gui import GUIUtils
@@ -12,16 +13,15 @@ class BoardDetector(object):
 
   _KMEANS_ATTEMPTS = 2
 
-  def __init__(self, config, img):
+  def __init__(self, config, hexagon_img, color_img):
     self._config = config
 
     contours = config.get_hexagons()
     if contours is None:
-      contours = HexagonDetector(config).detect_hexagons(img)
+      contours = HexagonDetector(config).detect_hexagons(hexagon_img)
 
-    # img = imutils.resize(img_arr, width=1000)
+    img = color_img
     mean_colors = np.copy(img)
-
     # Create and process each hexagon
     self._hexagons = []
     hex_mask = np.zeros((img.shape[0], img.shape[1]), np.uint8)
@@ -50,7 +50,7 @@ class BoardDetector(object):
     # Classify resources based on the kmeans result and detect the number
     for h in self._hexagons:
       h.detect_resource(kmeans)
-      h.detect_number()
+      h.detect_number(color_img)
 
   def get_hex_contours(self):
     return [h.get_contour() for h in self._hexagons]
@@ -69,7 +69,7 @@ class BoardDetector(object):
     Z = np.float32(Z)
 
     # Define criteria, number of clusters (K) and apply kmeans()
-    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1, 2.0)
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 3, 1.0)
     K = 6
     ret,label,center = cv2.kmeans(Z, K, None, criteria, self._KMEANS_ATTEMPTS, cv2.KMEANS_PP_CENTERS)
 

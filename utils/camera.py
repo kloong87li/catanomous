@@ -12,6 +12,7 @@ class Camera(object):
     self._cam = None
     self._rawCapture = None
     self._config = config
+    self._is_default_config = True
 
 
   def start(self):
@@ -25,13 +26,15 @@ class Camera(object):
 
     # set settings based on cam file
     cam_config = self._config.get_cam_all()
-    for key in cam_config:
-      self.set_setting(key, cam_config[key])
+    self._set_config(cam_config)
+    self._is_default_config = True
 
-    # Wait for the automatic gain control to settle
-    time.sleep(2)
+  def capture(self, config=None):
+    if config is not None:
+      self._set_config(config)
+    elif not self._is_default_config:
+      self._set_config(config.get_cam_all())
 
-  def capture(self):
     # grab an image from the camera
     rawCapture = PiRGBArray(self._cam)
     self._cam.capture(rawCapture, format="bgr")
@@ -72,6 +75,13 @@ class Camera(object):
 
   def stop_preview(self):
     self._cam.stop_preview()
+
+  def _set_config(config):
+    for key in config:
+      self.set_setting(key, config[key])
+
+    # Wait for the settings to change
+    time.sleep(1)
 
 
 

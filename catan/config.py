@@ -45,8 +45,9 @@ class CVConfig(object):
 
       "TILE_AMPLIFY_WHEAT": [([0, 200, 200], [36, 255, 255]), ColorThreshTrackbar],
       "TILE_AMPLIFY_BRICK": [([2, 149, 117], [9, 255, 255]), ColorThreshTrackbar],
-      "TILE_AMPLIFY_IRON": [([0, 81, 81], [46, 154, 187]), ColorThreshTrackbar],
+      "TILE_AMPLIFY_WOOD": [([0, 81, 81], [46, 154, 187]), ColorThreshTrackbar],
       "TILE_AMPLIFY_SHEEP": [([30, 232, 87], [112, 255, 157]), ColorThreshTrackbar],
+      "TILE_AMPLIFY_IRON": [([30, 232, 87], [112, 255, 157]), ColorThreshTrackbar],
 
       'TILE_COLOR_DESERT': [([0, 0, 0], [1, 1, 1]), ColorThreshTrackbar],
       'TILE_COLOR_BRICK': [([0, 146, 0], [16, 255, 255]), ColorThreshTrackbar],
@@ -54,6 +55,15 @@ class CVConfig(object):
       'TILE_COLOR_WHEAT': [([13, 0, 151], [179, 255, 255]), ColorThreshTrackbar],
       'TILE_COLOR_WOOD': [([19, 0, 0], [27, 255, 255]), ColorThreshTrackbar],
       'TILE_COLOR_SHEEP': [([27, 0, 0], [179, 255, 255]), ColorThreshTrackbar],
+
+      'PIECE_COLOR_RED': [([1, 1, 1], [9, 255, 255]), ColorThreshTrackbar],
+      'PIECE_COLOR_BLUE': [([44, 2, 1], [179, 255, 101]), ColorThreshTrackbar],
+      'PIECE_COLOR_ORANGE': [([16, 1, 220], [15, 255, 255]), ColorThreshTrackbar],
+      'PIECE_COLOR_WHITE': [([28, 1, 187], [27, 255, 224]), ColorThreshTrackbar],
+
+
+
+
 
       "DICE_HOUGH_CIRCLE": [((20, 60), (45, 25), 10), HoughCircleTrackbar]
     }
@@ -98,7 +108,7 @@ class CVConfig(object):
     CVConfig.save_json(filename, cjson)
 
   # Retrieve a key, launching a config GUI if necessary
-  def get(self, key, img):
+  def get(self, key, img, force_reset=False):
     if self._values[key][2]: # is_reset
       trackbar = self._values[key][1](img, self._values[key][0], key)
       trackbar.show_image()

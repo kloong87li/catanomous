@@ -34,7 +34,7 @@ class TileNumDetector(object):
 
 
   def _attempt_detection(self, img, mask, circle, erosion=0):
-    # Isolate number by thresholding and apply erosion if specified
+    # Isolate number by thresholding and apply erosion if specified    
     if erosion > 0:
       img = cv2.erode(img, np.ones((erosion, erosion), np.uint8))
     img = cv2.threshold(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 130, 255, cv2.THRESH_BINARY)[1]
@@ -44,7 +44,7 @@ class TileNumDetector(object):
     lcontours = []
     for c in contours:
       x, y, w, h = cv2.boundingRect(c)
-      if h > circle[2]/5: # if larger than a 3rd of the circle radius
+      if h > circle[2]/3: # if larger than a 3rd of the circle radius
         lcontours.append(c)
 
     # Draw number onto empty image

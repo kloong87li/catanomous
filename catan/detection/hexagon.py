@@ -61,7 +61,7 @@ class HexagonDetector(object):
     hexagons = cv2.erode(hexagons, np.ones(self._INITAL_EROSION, np.uint8))
     # Convert to grayscale and threshold
     gray = cv2.cvtColor(hexagons, cv2.COLOR_BGR2GRAY)
-    thresh = cv2.threshold(gray, 2, 255, cv2.THRESH_BINARY)[1]
+    thresh = cv2.threshold(gray, 5, 255, cv2.THRESH_BINARY)[1]
     # Get markers from watershed algorithm
     markers = self._get_watershed_markers(hexagons, thresh)
     # Get countours

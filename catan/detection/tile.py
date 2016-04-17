@@ -1,12 +1,13 @@
 import cv2
 import numpy as np
-from math import sqrt
 
 from utils.cv import CVUtils
 from utils.gui import GUIUtils
 
 from .tile_color import TileColorDetector
 from .tile_num import TileNumDetector
+from .piece import PieceDetector
+
 
 
 
@@ -16,9 +17,10 @@ class TileDetector(object):
   _COLOR_AMPLIFICATIONS = [
     # config_key, new color
     ("TILE_AMPLIFY_WHEAT", [0, 255, 255]),  # wheat
-    ("TILE_AMPLIFY_BRICK", [0, 0, 255]),     # brick
-    ("TILE_AMPLIFY_IRON", [200, 200, 200]),   # iron
-    ("TILE_AMPLIFY_SHEEP", [0, 255, 0])     # wood
+    ("TILE_AMPLIFY_BRICK", [20, 20, 255]),     # brick
+    ("TILE_AMPLIFY_WOOD", [40, 50, 60]),   # wood
+    ("TILE_AMPLIFY_SHEEP", [0, 255, 0]),     # wood
+    # ("TILE_AMPLIFY_IRON", [255, 255, 255])     # iron
   ]
   _CIRCLE_SCALE = 1.1
 
@@ -34,6 +36,7 @@ class TileDetector(object):
     # Initialize detectors
     self._color_detect = TileColorDetector(config)
     self._num_detect = TileNumDetector()
+    self._piece_detect = PieceDetector(config)
 
     self._circle = self._detect_circle()
 
@@ -46,13 +49,13 @@ class TileDetector(object):
     self._resource = self._color_detect.detect_resource(self._get_roi(kmeans_res), kmeans_res)
 
   # Detect and set self._number if no number was previously detected
-  def detect_number(self, img=None):
+  def detect_number(self, img):
     if self._circle is None:
       return None
 
     # Isolate circle area
-    mask = self._get_circle_mask(scale=.75)
-    img = CVUtils.mask_image(img or self._orig_hex, mask)
+    mask = self._get_circle_mask(scale=.95)
+    img = CVUtils.mask_image(self._get_roi(img), mask)
 
     num = self._num_detect.detect_number(img, mask, self._circle)
     if self._number is None:
@@ -71,22 +74,7 @@ class TileDetector(object):
       return False
 
   def detect_properties(self, new_img):
-    # Compute top most point
-    vertices = [v[0] for v in self._contour]
-    (top_i, top_v) = min(enumerate(vertices), key=lambda x: x[1][1])
-
-    prop_points = []
-    prev = None
-    (h, w, d) = self._orig_hex.shape
-    for i in xrange(len(vertices)):
-      v = vertices[(top_i + i) % len(vertices)]
-      
-      if prev is None or self._point_distance(prev, v) > h/3:
-        prop_points.append(v)
-        prev = v
-
-    # return list of properties
-    return prop_points
+    return self._piece_detect.detect_properties(new_img, self._contour)
 
   def get_contour(self):
     return self._contour
@@ -132,7 +120,7 @@ class TileDetector(object):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
     circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1, w*3/4,
-                                param1=60,param2=24,minRadius=w/10,maxRadius=w/5)
+                                param1=55,param2=30,minRadius=w/8,maxRadius=int(w/1.5))
     if circles is None:
       return None
 
@@ -144,7 +132,4 @@ class TileDetector(object):
   def _get_roi(self, img):
     (x, y, w, h) = cv2.boundingRect(self._contour)
     return img[y:y+h, x:x+w]
-
-  def _point_distance(self, pt1, pt2):
-    return sqrt((pt1[0] - pt2[0])**2 + (pt1[1] - pt2[1])**2)
 

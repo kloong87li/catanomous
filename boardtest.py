@@ -34,24 +34,28 @@ def show_new_game(img, hexagons, delay=250):
 # Displays the detected property locations on an image
 def show_properties(img, properties, delay=250):
   for (tile, prop_list) in properties:
-    for pt in prop_list:
-      cv2.circle(img, tuple(pt), 20, (0, 255, 0), 2)
+    for (pt, c) in prop_list:
+      (x,y) = pt
+      cv2.circle(img, tuple(pt), 25, (0, 255, 0), 1)
     
-    GUIUtils.update_image(img)
-    cv2.waitKey(delay)
+  GUIUtils.update_image(img)
+  cv2.waitKey(delay)
   return 
 
 
 # Fetches an image
 # if source == 'C'. then get from camera
-def get_image(camera, source=None):
+def get_image(camera, source=None, config=None):
   if source is None:
     source = raw_input("Image source? ")
 
   if source == 'C':
-    return camera.capture()
+    img = camera.capture()
   else:
-    return cv2.imread("images/" + source)
+    img = cv2.imread("images/" + source)
+
+  return imutils.resize(img, width=1200)
+
 
 
 # Loads the necessary config files
@@ -76,12 +80,13 @@ def prepare_config(args):
 # Processes each user input
 def handle_command(cmd, game, camera, args):
   if cmd == 'N':
-    img = get_image(camera)
+    img2 = get_image(camera, None, CVConfig.load_json("config/camera_hex.json"))
+    img1 = get_image(camera)
 
     initial = time.time()
-    hexes = game.new_game(img)
+    hexes = game.new_game(img1, img2)
     print "Time:", time.time() - initial
-    show_new_game(img, hexes)
+    show_new_game(img2, hexes)
 
     if args['sh']:
       game.save_hexagons("config/hexagons.npy")
@@ -98,19 +103,20 @@ def handle_command(cmd, game, camera, args):
 
 # Automatically does a new game + update with 2 test images
 def auto_test(game, camera, args):
-  img1 = get_image(camera, "test1_1.png")
-  img2 = get_image(camera, "test1_2.png")
+  img1 = get_image(camera, "test3_hex.png")
+  img2 = get_image(camera, "test3_color.png")
+  img3 = get_image(camera, "test3_pieces.png")
 
   initial = time.time()
-  hexes = game.new_game(img1)
+  hexes = game.new_game(img1, img2)
   print "Time:", time.time() - initial
-  show_new_game(img1, hexes, 0)
+  show_new_game(img2, hexes, 0)
 
   if args['sh']:
     game.save_hexagons("config/hexagons.npy")
 
-  props = game.update_properties(img2)
-  show_properties(img2, props, 0)
+  props = game.update_properties(img3)
+  show_properties(img3, props, 0)
 
 
 def main():

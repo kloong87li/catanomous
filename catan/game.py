@@ -14,8 +14,8 @@ class CatanomousGame(object):
     return
 
 
-  def new_game(self, board_img):
-    self._board_detector = BoardDetector(self._config, board_img)
+  def new_game(self, hex_img, color_img):
+    self._board_detector = BoardDetector(self._config, hex_img, color_img)
     self._dice_detector = DiceDetector(self._config)
     return self._board_detector._hexagons  #TODO temporary, remove this
 
