@@ -80,13 +80,15 @@ def prepare_config(args):
 # Processes each user input
 def handle_command(cmd, game, camera, args):
   if cmd == 'N':
-    img2 = get_image(camera, None, CVConfig.load_json("config/camera_hex.json"))
-    img1 = get_image(camera)
+    hexes = get_image(camera, None, CVConfig.load_json("config/camera_hex.json"))
+    resources = get_image(camera)
+    numbers = get_image(camera)
 
     initial = time.time()
-    hexes = game.new_game(img1, img2)
+    hexes = game.new_game(hexes)
+    game.setup_resources(resources, numbers)
     print "Time:", time.time() - initial
-    show_new_game(img2, hexes)
+    show_new_game(resources, hexes)
 
     if args['sh']:
       game.save_hexagons("config/hexagons.npy")
@@ -103,12 +105,14 @@ def handle_command(cmd, game, camera, args):
 
 # Automatically does a new game + update with 2 test images
 def auto_test(game, camera, args):
-  img1 = get_image(camera, "test3_hex.png")
-  img2 = get_image(camera, "test3_color.png")
-  img3 = get_image(camera, "test3_pieces.png")
+  img1 = get_image(camera, "test1_hex.png")
+  img2 = get_image(camera, "test1_color.png")
+  img3 = get_image(camera, "test1_pieces.png")
 
   initial = time.time()
-  hexes = game.new_game(img1, img2)
+  hexes = game.new_game(img1)
+  game.setup_resources(img2, img2)
+
   print "Time:", time.time() - initial
   show_new_game(img2, hexes, 0)
 

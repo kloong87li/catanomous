@@ -13,47 +13,48 @@ class BoardDetector(object):
 
   _KMEANS_ATTEMPTS = 2
 
-  def __init__(self, config, hexagon_img, color_img):
+  def __init__(self, config, hexagon_img):
     self._config = config
 
     contours = config.get_hexagons()
+    self._contours = contours
     if contours is None:
       contours = HexagonDetector(config).detect_hexagons(hexagon_img)
 
-    img = color_img
-    mean_colors = np.copy(img)
     # Create and process each hexagon
     self._hexagons = []
-    hex_mask = np.zeros((img.shape[0], img.shape[1]), np.uint8)
     for c in contours:
-      # Isolate hexagon
-      cv2.drawContours(hex_mask, [c], -1, [255, 255, 255], thickness=-1)
-      hex_img = CVUtils.mask_image(img, hex_mask)
-
       # Initialize detector
-      hexagon = TileDetector(config, c, hex_img, img)
+      hexagon = TileDetector(config, c, hexagon_img)
       self._hexagons.append(hexagon)
 
-      # Replace hexagon with its mean color
-      mean = hexagon.get_representative_color()
-      np.copyto(mean_colors, CVUtils.replace_color(mean_colors, hex_mask, mean))
+  def get_hex_contours(self):
+    return [h.get_contour() for h in self._hexagons]
 
-      hex_mask.fill(0)
+  def detect_resources(self, img):
+    mean_colors = np.copy(img)
+
+    for hexagon in self._hexagons:
+      # Replace hexagon with its mean color
+      mean = hexagon.get_representative_color(img)
+      np.copyto(mean_colors, CVUtils.replace_color(mean_colors, hexagon.get_hex_mask(), mean))
 
     # Isolate hexagons in mean color image
-    cv2.drawContours(hex_mask, contours, -1, [255, 255, 255], thickness=-1)
+    hex_mask = np.zeros((img.shape[0], img.shape[1]), np.uint8)
+    cv2.drawContours(hex_mask, self.get_hex_contours(), -1, [255, 255, 255], thickness=-1)
     mean_colors = CVUtils.mask_image(mean_colors, hex_mask)
 
     # Run kmeans
     kmeans = self._kmeans(mean_colors)
 
+
     # Classify resources based on the kmeans result and detect the number
     for h in self._hexagons:
       h.detect_resource(kmeans)
-      h.detect_number(color_img)
 
-  def get_hex_contours(self):
-    return [h.get_contour() for h in self._hexagons]
+  def detect_numbers(self, img):
+    for h in self._hexagons:
+      h.detect_number(img)
 
   def detect_properties(self, new_board_img):
     tiles = []
@@ -61,6 +62,8 @@ class BoardDetector(object):
       properties = tile.detect_properties(new_board_img)
       tiles.append((tile, properties))
     return tiles
+
+
 
 
   def _kmeans(self, img):
