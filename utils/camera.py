@@ -54,7 +54,7 @@ class Camera(object):
     elif key == "ISO":
       self._cam.iso = value
     elif key == "RESOLUTION":
-      self._cam.resolution = value
+      self._cam.resolution = tuple(value)
     elif key == "SATURATION":
       self._cam.saturation = value
     elif key == "SHARPNESS":
