@@ -32,10 +32,10 @@ class Camera(object):
   def capture(self, config=None):
     if config is not None:
       self._set_config(config)
-      time.sleep(.5)
+      self._is_default_config = False
     elif not self._is_default_config:
       self._set_config(config.get_cam_all())
-      time.sleep(.5)
+      self._is_default_config = True
 
     # grab an image from the camera
     rawCapture = PiRGBArray(self._cam)

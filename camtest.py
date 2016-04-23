@@ -36,12 +36,13 @@ def main():
   config.load_cam_config(cam_config)
 
   camera = Camera(config)
+  config_json = None
 
   try:
     camera.start()
 
     while (True):
-      print "Enter a camera setting to change. (or 'P' to preview, 'X' to quit, 'V' to see current settings, 'S' to save image)"
+      print "Enter a camera setting to change. (or 'P' to preview, 'X' to quit, 'V' to see current settings, 'S' to save image, 'L' to load config)"
       token = raw_input("Input: ")
 
       if token == 'P':
@@ -57,6 +58,11 @@ def main():
         img = get_picture(camera)
         path = raw_input("Path: ")
         CVUtils.save_img(img, path)
+      elif token == 'L':
+        config_path = raw_input('Config path:')
+        config_json = CVConfig.load_json(config_path)
+        camera._set_config(config_json)
+        get_picture(camera)
       else:
         process_token(token, camera)
         get_picture(camera)
