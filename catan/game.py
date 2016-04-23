@@ -8,15 +8,14 @@ class CatanomousGame(object):
 
   def __init__(self, config):
     self._board_detector = None
-    self._dice_detector = None
     self._config = config
+    self._dice_detector = DiceDetector(self._config)
 
     return
 
 
   def new_game(self, hex_img):
     self._board_detector = BoardDetector(self._config, hex_img)
-    self._dice_detector = DiceDetector(self._config)
     return self._board_detector._hexagons  #TODO temporary, remove this
 
   def setup_resources(self, resource_img, number_img):
