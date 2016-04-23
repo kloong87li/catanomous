@@ -56,6 +56,7 @@ class CVConfig(object):
       'TILE_COLOR_WOOD': [([19, 0, 0], [27, 255, 255]), ColorThreshTrackbar],
       'TILE_COLOR_SHEEP': [([27, 0, 0], [179, 255, 255]), ColorThreshTrackbar],
 
+      'PIECE_HOUGH_CIRCLE': [((20, 60), (45, 25), 10), HoughCircleTrackbar],
       'PIECE_COLOR_RED': [([1, 1, 1], [9, 255, 255]), ColorThreshTrackbar],
       'PIECE_COLOR_BLUE': [([44, 2, 1], [179, 255, 101]), ColorThreshTrackbar],
       'PIECE_COLOR_ORANGE': [([16, 1, 220], [15, 255, 255]), ColorThreshTrackbar],
@@ -109,7 +110,7 @@ class CVConfig(object):
 
   # Retrieve a key, launching a config GUI if necessary
   def get(self, key, img, force_reset=False):
-    if self._values[key][2]: # is_reset
+    if self._values[key][2] or force_reset: # is_reset
       trackbar = self._values[key][1](img, self._values[key][0], key)
       trackbar.show_image()
       GUIUtils.wait()

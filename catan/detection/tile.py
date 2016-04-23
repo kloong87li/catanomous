@@ -1,12 +1,12 @@
 import cv2
 import numpy as np
-
+from math import sqrt
 from utils.cv import CVUtils
 from utils.gui import GUIUtils
 
 from .tile_color import TileColorDetector
 from .tile_num import TileNumDetector
-from .piece import PieceDetector
+from .tile_piece import PieceDetector
 
 
 
@@ -39,6 +39,7 @@ class TileDetector(object):
     cv2.drawContours(self._hex_mask, [contour], -1, [255, 255, 255], thickness=-1)
     
     self._circle = self._detect_circle(hex_img)
+    self._vertices = self._get_vertices(contour)
     self._resource = None
     self._number = None
 
@@ -74,7 +75,7 @@ class TileDetector(object):
       return False
 
   def detect_properties(self, new_img):
-    return self._piece_detect.detect_properties(new_img, self._contour)
+    return self._piece_detect.detect_properties(new_img, self._vertices)
 
   def get_contour(self):
     return self._contour
@@ -136,6 +137,23 @@ class TileDetector(object):
     circle = np.uint8(np.around(circles))[0, :][0]
     return circle
 
+  def _get_vertices(self, contour):
+    # Compute top most point
+    vertices = [v[0] for v in contour]
+    (top_i, top_v) = min(enumerate(vertices), key=lambda x: x[1][1])
+
+    def_vertex = []
+    prev = None
+    (x,y,w,h) = cv2.boundingRect(contour)
+    for i in xrange(len(vertices)):
+      v = vertices[(top_i + i) % len(vertices)]
+      
+      if prev is None or self._point_distance(prev, v) > h/3:
+        prev = v
+        def_vertex.append(v)
+
+    return def_vertex
+
   def _get_roi(self, img):
     (x, y, w, h) = cv2.boundingRect(self._contour)
     return img[y:y+h, x:x+w]
@@ -143,3 +161,6 @@ class TileDetector(object):
   def _get_hex_roi(self, img):
     hex_only = CVUtils.mask_image(img, self._hex_mask)
     return self._get_roi(hex_only)
+
+  def _point_distance(self, pt1, pt2):
+    return sqrt((pt1[0] - pt2[0])**2 + (pt1[1] - pt2[1])**2)
