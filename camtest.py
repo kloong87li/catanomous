@@ -31,7 +31,7 @@ def get_picture(camera):
   return img
 
 def main():
-  cam_config = "config/camera.json"
+  cam_config = "config/camera_dice.json"
   config = CVConfig("config/config.json")
   config.load_cam_config(cam_config)
 

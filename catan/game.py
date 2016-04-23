@@ -34,7 +34,7 @@ class CatanomousGame(object):
   # Returns obj indicating what resources to distribute
   def dice_rolled(self, dice_img):
     num = self._dice_detector.detect_roll(dice_img)
-    return
+    return num
 
 
 

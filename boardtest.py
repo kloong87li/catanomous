@@ -99,19 +99,21 @@ def handle_command(cmd, game, camera, args):
     show_properties(img, props)
 
   elif cmd == 'D':
-    img = get_image(camera)
-    game.dice_rolled(img)
+    img = get_image(camera, None, CVConfig.load_json("config/camera_dice.json"))
+    num = game.dice_rolled(img)
+    GUIUtils.show_image(img)
+    print "Rolled number:", num
 
 
 # Automatically does a new game + update with 2 test images
 def auto_test(game, camera, args):
-  img1 = get_image(camera, "test1_hex.png")
-  img2 = get_image(camera, "test1_color.png")
-  img3 = get_image(camera, "test1_pieces.png")
+  img1 = get_image(camera, "test3_hex.png")
+  img2 = get_image(camera, "test3_color.png")
+  img3 = get_image(camera, "test3_pieces.png")
 
   initial = time.time()
   hexes = game.new_game(img1)
-  game.setup_resources(img2, img2)
+  game.setup_resources(img2, img1)
 
   print "Time:", time.time() - initial
   show_new_game(img2, hexes, 0)
