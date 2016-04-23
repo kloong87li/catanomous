@@ -76,7 +76,7 @@ class Camera(object):
   def stop_preview(self):
     self._cam.stop_preview()
 
-  def _set_config(config):
+  def _set_config(self, config):
     for key in config:
       self.set_setting(key, config[key])
 
