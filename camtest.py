@@ -31,7 +31,7 @@ def get_picture(camera):
   return img
 
 def main():
-  cam_config = "config/camera_dice.json"
+  cam_config = "config/camera.json"
   config = CVConfig("config/config.json")
   config.load_cam_config(cam_config)
 
@@ -59,7 +59,7 @@ def main():
         path = raw_input("Path: ")
         CVUtils.save_img(img, path)
       elif token == 'L':
-        config_path = raw_input('Config path:')
+        cam_config = raw_input('Config path:')
         config_json = CVConfig.load_json(config_path)
         camera._set_config(config_json)
         get_picture(camera)
