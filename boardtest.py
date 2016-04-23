@@ -50,7 +50,7 @@ def get_image(camera, source=None, config=None):
     source = raw_input("Image source? ")
 
   if source == 'C':
-    img = camera.capture()
+    img = camera.capture(config)
   else:
     img = cv2.imread("images/" + source)
 
