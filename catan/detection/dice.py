@@ -13,7 +13,7 @@ class DiceDetector(object):
 
   def detect_roll(self, img):
     (h, w, z) = img.shape
-    gray = cv2.cvtColor(self._img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     hough_config = self._config.get("DICE_HOUGH_CIRCLE", img)
     circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/hough_config[2],
                                 param1=hough_config[0][1],
