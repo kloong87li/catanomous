@@ -9,10 +9,12 @@ from catan.config import CVConfig
 from catan.game import CatanomousGame
 
 from utils.camera import Camera
+from utils.debug import Debugger
 
 class MainController(object):
   _IMAGE_WIDTH = 1200
   _HEX_FILE = "config/hexagons.npy"
+  _CONFIG_FILE = "config/config.json"
 
   def __init__(self):
     self._camera_hex_config = CVConfig.load_json("config/camera_hex.json")
@@ -22,7 +24,7 @@ class MainController(object):
   def _prepare_config(self, reset=False):
     hex_config = self._HEX_FILE
     camera_config = "config/camera.json"
-    cv_config = "config/config.json"
+    cv_config = self._CONFIG_FILE
 
     config = CVConfig(cv_config, reset)
     config.load_cv_config(cv_config)
@@ -45,7 +47,7 @@ class MainController(object):
     hexes = self._game.init_game(img)
 
     if save:
-      self._game.save_hexagons()
+      self._game.save_hexagons(self._HEX_FILE)
 
     if debug:
       Debugger.show_hexagons(img, hexes, 0)
@@ -98,8 +100,13 @@ class MainController(object):
     self._game = CatanomousGame(self._config)
 
     self._handle_hexagon_init(True, debug=True)
+    self._config.save_cv_config(self._CONFIG_FILE)
+
     self._handle_resource_init(debug=True)
+    self._config.save_cv_config(self._CONFIG_FILE)
+
     self._handle_dice_roll(1, debug=True)
+    self.config.save_cv_config(self._CONFIG_FILE)
 
 
 

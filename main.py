@@ -11,7 +11,11 @@ def main():
 
 
   controller = MainController()
-  controller.start()
+ 
+  if args['test']:
+    controller.start_test()
+  else:
+    controller.start()
 
 if __name__ == "__main__":
   main()
