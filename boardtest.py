@@ -36,7 +36,8 @@ def show_properties(img, properties, delay=250):
   for (tile, prop_list) in properties:
     for (pt, c) in prop_list:
       (x,y) = pt
-      cv2.circle(img, tuple(pt), 25, (0, 255, 0), 1)
+      color = (0, 0, 255) if c.isupper() else (0, 255, 0)
+      cv2.circle(img, tuple(pt), 25, color, 1)
     
   GUIUtils.update_image(img)
   cv2.waitKey(delay)
@@ -107,9 +108,10 @@ def handle_command(cmd, game, camera, args):
 
 # Automatically does a new game + update with 2 test images
 def auto_test(game, camera, args):
-  img1 = get_image(camera, "test1_1.png")
-  img2 = get_image(camera, "test1_2b.png")
-  img3 = get_image(camera, "test1_3.png")
+  img1 = get_image(camera, "test2_1.png")
+  img2 = get_image(camera, "test2_2.png")
+  img3 = get_image(camera, "test2_3.png")
+  img4 = get_image(camera, "test2_4.png")
 
   initial = time.time()
   hexes = game.new_game(img1)
@@ -121,9 +123,8 @@ def auto_test(game, camera, args):
   if args['sh']:
     game.save_hexagons("config/hexagons.npy")
 
-  props = game.update_properties(img3)
+  props = game.update_properties(img4)
   show_properties(img3, props, 0)
-
 
 def main():
   # Parse arguments
