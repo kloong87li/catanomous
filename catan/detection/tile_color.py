@@ -6,7 +6,7 @@ from utils.gui import GUIUtils
 
 class TileColorDetector(object):
   _TILE_COLORS = [
-    'DESERT', 'BRICK', 'IRON', 'WHEAT', 'WOOD', 'SHEEP'
+    'BRICK', 'IRON', 'WHEAT', 'WOOD', 'SHEEP'
   ]
 
   def __init__(self, config):

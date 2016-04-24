@@ -62,6 +62,7 @@ class CVConfig(object):
       'PIECE_COLOR_ORANGE': [([16, 1, 220], [15, 255, 255]), ColorThreshTrackbar],
       'PIECE_COLOR_WHITE': [([28, 1, 187], [27, 255, 224]), ColorThreshTrackbar],
 
+      'PIECE_MARKER_BLACK': [([0, 0, 0], [15, 15, 15]), ColorThreshTrackbar],
 
 
 

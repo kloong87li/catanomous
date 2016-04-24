@@ -50,7 +50,7 @@ class BoardDetector(object):
 
     # Classify resources based on the kmeans result and detect the number
     for h in self._hexagons:
-      h.detect_resource(kmeans)
+      h.detect_resource(img, kmeans)
 
   def detect_numbers(self, img):
     for h in self._hexagons:

@@ -38,15 +38,17 @@ class TileDetector(object):
     self._hex_mask = np.zeros((hex_img.shape[0], hex_img.shape[1]), np.uint8)
     cv2.drawContours(self._hex_mask, [contour], -1, [255, 255, 255], thickness=-1)
     
-    self._circle = self._detect_circle(hex_img)
     self._vertices = self._get_vertices(contour)
     self._resource = None
     self._number = None
 
 
   # Detects the resource using the result of the kmeans algo
-  def detect_resource(self, kmeans_res):
-    self._resource = self._color_detect.detect_resource(self._get_roi(kmeans_res), kmeans_res)
+  def detect_resource(self, img, kmeans_res):
+    if self._circle is None:
+      self._resource = 'DESERT'
+    else:
+      self._resource = self._color_detect.detect_resource(self._get_roi(kmeans_res), kmeans_res)
 
   # Detect and set self._number if no number was previously detected
   def detect_number(self, img):
@@ -86,6 +88,7 @@ class TileDetector(object):
   # Returns mean color of this hexagon
   # includes some preprocessing to help make each mean unique
   def get_representative_color(self, color_board_img):
+    self._circle = self._detect_circle(color_board_img)
     roi = self._get_hex_roi(color_board_img)
     
     # Eliminate circlular number piece
@@ -128,7 +131,7 @@ class TileDetector(object):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
     circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1, w*3/4,
-                                param1=60,param2=25,minRadius=w/7,maxRadius=int(w/3))
+                                param1=60,param2=30,minRadius=w/7,maxRadius=int(w/3))
     if circles is None:
       return None
 
