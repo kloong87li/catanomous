@@ -46,7 +46,10 @@ class TileDetector(object):
 
   # Detects the resource using the result of the kmeans algo
   def detect_resource(self, kmeans_res):
-    self._resource = self._color_detect.detect_resource(self._get_roi(kmeans_res), kmeans_res)
+    if self._circle is None:
+      self._resource = 'DESERT'
+    else:
+      self._resource = self._color_detect.detect_resource(self._get_roi(kmeans_res), kmeans_res)
 
   # Detect and set self._number if no number was previously detected
   def detect_number(self, img):
@@ -128,7 +131,7 @@ class TileDetector(object):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
     circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1, w*3/4,
-                                param1=60,param2=25,minRadius=w/7,maxRadius=int(w/3))
+                                param1=60,param2=30,minRadius=w/7,maxRadius=int(w/3))
     if circles is None:
       return None
 

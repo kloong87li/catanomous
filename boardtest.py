@@ -107,13 +107,13 @@ def handle_command(cmd, game, camera, args):
 
 # Automatically does a new game + update with 2 test images
 def auto_test(game, camera, args):
-  img1 = get_image(camera, "test3_hex.png")
-  img2 = get_image(camera, "test3_color.png")
-  img3 = get_image(camera, "test3_pieces.png")
+  img1 = get_image(camera, "test1_1.png")
+  img2 = get_image(camera, "test1_2b.png")
+  img3 = get_image(camera, "test1_3.png")
 
   initial = time.time()
   hexes = game.new_game(img1)
-  game.setup_resources(img2, img1)
+  game.setup_resources(img2, img2)
 
   print "Time:", time.time() - initial
   show_new_game(img2, hexes, 0)
