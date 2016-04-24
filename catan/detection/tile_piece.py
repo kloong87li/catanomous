@@ -74,7 +74,6 @@ class PieceDetector(object):
         piece_color = color.lower()
         break
 
-    return piece_color
     # Check if city or settlement by looking for black piece marker
     bounds = self._config.get('PIECE_MARKER_BLACK', img)
     range_mask = CVUtils.range_mask(hsv, bounds[0], bounds[1])

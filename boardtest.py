@@ -124,7 +124,7 @@ def auto_test(game, camera, args):
     game.save_hexagons("config/hexagons.npy")
 
   props = game.update_properties(img4)
-  show_properties(img3, props, 0)
+  show_properties(img4, props, 0)
 
 def main():
   # Parse arguments
