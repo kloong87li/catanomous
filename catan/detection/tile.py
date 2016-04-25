@@ -131,7 +131,7 @@ class TileDetector(object):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
     circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1, w*3/4,
-                                param1=60,param2=30,minRadius=w/7,maxRadius=int(w/3))
+                                param1=60,param2=30,minRadius=int(w/7.75),maxRadius=int(w/2.5))
     if circles is None:
       return None
 
@@ -154,6 +154,8 @@ class TileDetector(object):
       if prev is None or self._point_distance(prev, v) > int(h/2.75):
         prev = v
         def_vertex.append(v)
+	if len(def_vertex) == 6:
+	  break
 
     return def_vertex
 

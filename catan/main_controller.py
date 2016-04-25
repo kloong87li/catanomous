@@ -72,6 +72,7 @@ class MainController(object):
   # Called to detect new properties and deal cards based on roll
   def _handle_dice_roll(self, num, debug=False):
     img = self._get_image()
+    initial = time.time()
     instructions = self._game.dice_rolled(num, img)
 
     if debug:
@@ -111,8 +112,8 @@ class MainController(object):
     self._handle_hexagon_init(reset_hexes, debug=True)
     self._config.save_cv_config(self._CONFIG_FILE)
 
-    self._handle_resource_init(debug=True)
-    self._config.save_cv_config(self._CONFIG_FILE)
+    # self._handle_resource_init(debug=True)
+    # self._config.save_cv_config(self._CONFIG_FILE)
 
     self._handle_dice_roll(1, debug=True)
     self._config.save_cv_config(self._CONFIG_FILE)

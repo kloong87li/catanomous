@@ -43,7 +43,7 @@ class Debugger(object):
     for (tile, prop_list) in properties:
       for (pt, c) in prop_list:
         (x,y) = pt
-        if c == 'None':
+        if c == 'None' or c == 'NONE':
           color = (255, 0, 0)
         else:
           color = (0, 0, 255) if c.isupper() else (0, 255, 0)
