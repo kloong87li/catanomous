@@ -110,7 +110,7 @@ class MainController(object):
     self._config.save_cv_config(self._CONFIG_FILE)
 
     self._handle_dice_roll(1, debug=True)
-    self.config.save_cv_config(self._CONFIG_FILE)
+    self._config.save_cv_config(self._CONFIG_FILE)
 
 
 
