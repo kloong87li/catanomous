@@ -62,7 +62,7 @@ class MainController(object):
     tiles = self._game.new_game(res_img, num_img)
 
     if debug:
-      "Resources detected, moving on to pieces"
+      print "Resources detected, moving on to pieces"
       Debugger.show_resources(res_img, tiles, 0)
 
   # Called to detect new properties and deal cards based on roll
@@ -71,7 +71,7 @@ class MainController(object):
     instructions = self._game.dice_rolled(num, img)
 
     if debug:
-      "Pieces detected, exiting..."
+      print "Pieces detected, exiting..."
       Debugger.show_properties(img, instructions, 0)
     # TODO something with the instructions
 
