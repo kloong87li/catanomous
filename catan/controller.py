@@ -41,12 +41,13 @@ class MainController(object):
     return imutils.resize(img, width=self._IMAGE_WIDTH)
 
   # Called to detect and save hexagons
-  def _handle_hexagon_init(self, save=False, debug=False):
+  def _handle_hexagon_init(self, reset=True, debug=False):
     img = self._get_image(self._camera_hex_config)
-    self._config.set_hexagons(None)
+    if reset:
+      self._config.set_hexagons(None)
     hexes = self._game.init_game(img)
 
-    if save:
+    if reset:
       self._game.save_hexagons(self._HEX_FILE)
 
     if debug:
@@ -85,12 +86,8 @@ class MainController(object):
       token = raw_input("Input: ")
 
       if token == '1':
-        new_image = raw_input("New image?" ) == 'Y'
-        if new_image:
-          save = raw_input("Save?") == 'Y'
-          self._handle_hexagon_init(save, debug=True)
-        else:
-          self._game.init_game(None)
+        reset = raw_input("Reset?") == 'Y'
+        self._handle_hexagon_init(reset, debug=True)
       elif token == '2':
         self._handle_resource_init(debug=True)
       elif token == '3':
@@ -106,11 +103,8 @@ class MainController(object):
     self._camera.start()
     self._game = CatanomousGame(self._config)
 
-    if reset_hexes:
-      self._handle_hexagon_init(True, debug=True)
-      self._config.save_cv_config(self._CONFIG_FILE)
-    else:
-      self._game.init_game(None)
+    self._handle_hexagon_init(reset_hexes, debug=True)
+    self._config.save_cv_config(self._CONFIG_FILE)
 
     self._handle_resource_init(debug=True)
     self._config.save_cv_config(self._CONFIG_FILE)
