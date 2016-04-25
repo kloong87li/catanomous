@@ -31,7 +31,7 @@ class Camera(object):
 
   def capture(self, config=None):
     if config is not None:
-      self._set_config(config)
+      self._set_config(config, False)
       self._is_default_config = False
     elif not self._is_default_config:
       self._set_config(self._config.get_cam_all())
@@ -42,7 +42,7 @@ class Camera(object):
     self._cam.capture(rawCapture, format="bgr")
     return rawCapture.array
 
-  def set_setting(self, key, value):
+  def set_setting(self, key, value, save=True):
     if key == "AWB":
       self._cam.awb_gains = value
     elif key == "BRIGHTNESS":
@@ -65,7 +65,8 @@ class Camera(object):
       print "!! [CONFIG] Invalid key for camera configuration."
       return
       
-    self._config.set_cam(key, value)
+    if save:
+      self._config.set_cam(key, value)
 
 
   def stop(self):
@@ -78,9 +79,9 @@ class Camera(object):
   def stop_preview(self):
     self._cam.stop_preview()
 
-  def _set_config(self, config):
+  def _set_config(self, config, save=True):
     for key in config:
-      self.set_setting(key, config[key])
+      self.set_setting(key, config[key], save)
 
     # Wait for the settings to change
     time.sleep(1)

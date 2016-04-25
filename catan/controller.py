@@ -96,14 +96,15 @@ class MainController(object):
     return
 
 
-  def start_test(self):
+  def start_test(self, reset_hexes=False):
     self._config = self._prepare_config(True)
     self._camera = Camera(self._config)
     self._camera.start()
     self._game = CatanomousGame(self._config)
 
-    self._handle_hexagon_init(True, debug=True)
-    self._config.save_cv_config(self._CONFIG_FILE)
+    if reset_hexes:
+      self._handle_hexagon_init(True, debug=True)
+      self._config.save_cv_config(self._CONFIG_FILE)
 
     self._handle_resource_init(debug=True)
     self._config.save_cv_config(self._CONFIG_FILE)
