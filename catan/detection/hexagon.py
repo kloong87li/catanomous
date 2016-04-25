@@ -104,20 +104,18 @@ class HexagonDetector(object):
     sure_fg = np.uint8(sure_fg)
 
     # Modification to above, use circles as reference for markers
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    (h, w) = thresh.shape
-    hough_config = self._config.get("BOARD_HOUGH_CIRCLE", img)
-    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/hough_config[2],
-                                param1=hough_config[0][1],
-                                param2=hough_config[0][0],
-                                minRadius=h/hough_config[1][0],maxRadius=h/hough_config[1][1])
-    circle_mask = np.zeros((h, w), np.uint8)
-    for circle in circles[0]:
-      # Draw circles on mask
-      cv2.circle(circle_mask, (circle[0], circle[1]), np.uint8(circle[2]), 255, thickness=-1)
-    # dilate to make circles bigger
-    # circle_mask = cv2.dilate(circle_mask, np.ones(self._INITAL_EROSION, np.uint8), iterations=2)
-    sure_fg = cv2.bitwise_or(sure_fg, circle_mask)
+    # gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # (h, w) = thresh.shape
+    # hough_config = self._config.get("BOARD_HOUGH_CIRCLE", img)
+    # circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/hough_config[2],
+    #                             param1=hough_config[0][1],
+    #                             param2=hough_config[0][0],
+    #                             minRadius=h/hough_config[1][0],maxRadius=h/hough_config[1][1])
+    # circle_mask = np.zeros((h, w), np.uint8)
+    # for circle in circles[0]:
+    #   # Draw circles on mask
+    #   cv2.circle(circle_mask, (circle[0], circle[1]), np.uint8(circle[2]), 255, thickness=-1)
+    # sure_fg = cv2.bitwise_or(sure_fg, circle_mask)
 
     # Find region that we are not sure about
     unknown = cv2.subtract(sure_bg, sure_fg)

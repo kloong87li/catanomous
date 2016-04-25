@@ -34,7 +34,7 @@ class Camera(object):
       self._set_config(config)
       self._is_default_config = False
     elif not self._is_default_config:
-      self._set_config(config.get_cam_all())
+      self._set_config(self._config.get_cam_all())
       self._is_default_config = True
 
     # grab an image from the camera
