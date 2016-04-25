@@ -42,17 +42,22 @@ def main():
     camera.start()
 
     while (True):
-      print "Enter a camera setting to change. (or 'P' to preview, 'X' to quit, 'V' to see current settings, 'S' to save image, 'L' to load config)"
+      print "Enter a camera setting to change. (or 'P' to preview, 'X' to quit, 'V' to see current settings, 'S' to save image, 'L' to load config, 'SC' to save config)"
       print "1 to save hexagon pic, 2 to save resource pic"
       token = raw_input("Input: ")
 
       if token == 'P':
         get_picture(camera)
       elif token == 'X':
+        print "Saving config as:", cam_config
         config.save_cam_config(cam_config)
         break
+      elif token == 'SC':
+        print "Saving config as:", cam_config
+        config.save_cam_config(cam_config)
       elif token == 'V':
         settings = config.get_cam_all()
+        print "Settings for: ", cam_config
         for key in settings:
           print key, ": ", settings[key]
       elif token == 'S':
