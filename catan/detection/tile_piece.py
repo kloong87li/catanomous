@@ -11,7 +11,7 @@ class PieceDetector(object):
   _ROI_RADIUS = 40 # region of interest radius when looking for pieces around a vertex
   _PLAYER_COLORS = ['RED', 'BLUE', 'ORANGE', 'WHITE']
   _PIECE_AREA_RADIUS = 5
-  _PIECE_AREA_THRESH = 20
+  _PIECE_AREA_THRESH = 40
   _BLACK_THRESH = 500
   _MARKER_DIST_FROM_CENTER = 20
 
