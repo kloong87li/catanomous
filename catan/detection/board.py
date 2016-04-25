@@ -56,10 +56,25 @@ class BoardDetector(object):
     for h in self._hexagons:
       h.detect_number(img)
 
-  def detect_properties(self, new_board_img):
+  def detect_properties(self, img):
+    # Get circles only
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    (h, w) = gray.shape
+    hough_config = self._config.get("PIECES_HOUGH_CIRCLE", img)
+    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/hough_config[2],
+                                param1=hough_config[0][1],
+                                param2=hough_config[0][0],
+                                minRadius=h/hough_config[1][0],maxRadius=h/hough_config[1][1])
+    circle_mask = np.zeros((h, w), np.uint8)
+    for circle in circles[0]:
+      # Draw circles on mask
+      cv2.circle(circle_mask, (circle[0], circle[1]), np.uint8(circle[2]), 255, thickness=-1)
+    img = CVUtils.mask_image(img, circle_mask)
+    GUIUtils.show_image(img)
+
     tiles = []
     for tile in self._hexagons:
-      properties = tile.detect_properties(new_board_img)
+      properties = tile.detect_properties(img)
       tiles.append((tile, properties))
     return tiles
 
