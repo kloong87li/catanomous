@@ -32,7 +32,10 @@ class MainController(object):
     return config
 
   def _get_image(self, config=None):
-    img = camera.capture(config)
+    if self._camera is None:
+      print "Camera unintialized"
+      
+    img = self._camera.capture(config)
     return imutils.resize(img, width=self._IMAGE_WIDTH)
 
   # Called to detect and save hexagons
@@ -69,6 +72,7 @@ class MainController(object):
   def start(self):
     self._config = self._prepare_config()
     self._camera = Camera(self._config)
+    self._camera.start()
     self._game = CatanomousGame(self._config)
 
     while (True):
@@ -90,6 +94,7 @@ class MainController(object):
   def start_test(self):
     self._config = self._prepare_config(True)
     self._camera = Camera(self._config)
+    self._camera.start()
     self._game = CatanomousGame(self._config)
 
     self._handle_hexagon_init(True, debug=True)
