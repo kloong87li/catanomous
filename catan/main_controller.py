@@ -10,6 +10,7 @@ from catan.game import CatanomousGame
 
 from utils.camera import Camera
 from utils.debug import Debugger
+import time
 
 class MainController(object):
   _IMAGE_WIDTH = 1200
@@ -18,7 +19,8 @@ class MainController(object):
 
   def __init__(self):
     self._camera_hex_config = CVConfig.load_json("config/camera_hex.json")
-    self._camera_dice_config = CVConfig.load_json("config/camera_hex.json")
+    self._camera_nums_config = CVConfig.load_json("config/camera_nums.json")
+
     return
 
   def _prepare_config(self, reset=False):
@@ -45,24 +47,26 @@ class MainController(object):
     img = self._get_image(self._camera_hex_config)
     if reset:
       self._config.set_hexagons(None)
+    initial = time.time()
     hexes = self._game.init_game(img)
 
     if reset:
       self._game.save_hexagons(self._HEX_FILE)
 
     if debug:
-      print "Hexagons detected, moving on to resources"
+      print "Hexagons detected, moving on to resources, time: ", time.time() - initial
       Debugger.show_hexagons(img, hexes, 0)
 
   # Called to detect resources and numbers
   def _handle_resource_init(self, debug=False):
+    num_img = self._get_image(self._camera_nums_config)
     res_img = self._get_image()
-    num_img = res_img
 
+    initial = time.time()
     tiles = self._game.new_game(res_img, num_img)
 
     if debug:
-      print "Resources detected, moving on to pieces"
+      print "Resources/numbers detected, moving on to pieces, time: ", time.time() - initial
       Debugger.show_resources(res_img, tiles, 0)
 
   # Called to detect new properties and deal cards based on roll
@@ -71,8 +75,9 @@ class MainController(object):
     instructions = self._game.dice_rolled(num, img)
 
     if debug:
-      print "Pieces detected, exiting..."
+      print "Pieces detected, exiting..., time: ", time.time() - initial
       Debugger.show_properties(img, instructions, 0)
+      
     # TODO something with the instructions
 
   def start(self):

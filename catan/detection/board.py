@@ -70,7 +70,6 @@ class BoardDetector(object):
       # Draw circles on mask
       cv2.circle(circle_mask, (circle[0], circle[1]), np.uint8(circle[2]), 255, thickness=-1)
     img = CVUtils.mask_image(img, circle_mask)
-    GUIUtils.show_image(img)
 
     tiles = []
     for tile in self._hexagons:

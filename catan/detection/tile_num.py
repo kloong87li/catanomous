@@ -19,6 +19,7 @@ class TileNumDetector(object):
   # detects number given the img, circle mask, and circle tuple
   def detect_number(self, img, mask, circle):
     img = CVUtils.replace_color(img, CVUtils.invert_mask(mask), [255,255,255])
+    GUIUtils.show_image(img)
 
     # Increase erosion until a valid number is found
     erosion = 0
@@ -26,10 +27,12 @@ class TileNumDetector(object):
     while (num not in self._VALID_NUMS and erosion <= 3):
       erosion = erosion + 1
       num = self._attempt_detection(img, np.copy(mask), circle, erosion)
+      print num
 
     if num not in self._VALID_NUMS:
       return None
     else:
+      print "Found: ", num
       return num
 
 
@@ -37,7 +40,7 @@ class TileNumDetector(object):
     # Isolate number by thresholding and apply erosion if specified    
     if erosion > 0:
       img = cv2.erode(img, np.ones((erosion, erosion), np.uint8))
-    img = cv2.threshold(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 130, 255, cv2.THRESH_BINARY)[1]
+    img = cv2.threshold(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 140, 255, cv2.THRESH_BINARY)[1]
 
     # Only retain large enough contours
     contours = cv2.findContours(CVUtils.invert_mask(img), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
@@ -53,10 +56,11 @@ class TileNumDetector(object):
     cv2.drawContours(img, lcontours, -1, (0,0,0), -1)
 
     # Preprocess for tesseract OCR
-    if erosion > 0:
-      img = cv2.dilate(img, np.ones((erosion, erosion), np.uint8))
+    # if erosion > 0:
+    #   img = cv2.dilate(img, np.ones((erosion, erosion), np.uint8))
     img = imutils.resize(img, width=400)
 
+    GUIUtils.show_image(img)
     # Must make PIL image to run tesseract on it
     pil_image = Image.fromarray(img)
     return pytesseract.image_to_string(pil_image, config="-psm 7 digits")

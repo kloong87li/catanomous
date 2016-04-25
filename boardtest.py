@@ -46,23 +46,25 @@ def prepare_config(args):
 
 # Automatically does a new game + update with 2 test images
 def auto_test(game, camera, args):
-  img1 = get_image(camera, "test2_1.png")
-  img2 = get_image(camera, "test2_2.png")
-  img3 = get_image(camera, "test2_3.png")
-  img4 = get_image(camera, "test2_4.png")
+  img1 = get_image(camera, "test_hex.png")
+  img2 = get_image(camera, "test_resource.png")
+  img3 = get_image(camera, "test_pieces1.png")
+  img4 = get_image(camera, "test_pieces2.png")
 
   initial = time.time()
   hexes = game.init_game(img1)
   game.new_game(img2, img2)
 
-  print "Time:", time.time() - initial
+  print "Time for setup:", time.time() - initial
   Debugger.show_hexagons(img2, hexes, 0)
   Debugger.show_resources(img2, hexes, 0)
 
   if args['sh']:
     game.save_hexagons("config/hexagons.npy")
 
+  initial = time.time()
   props = game.dice_rolled(1, img4)
+  print "Time for pieces:", time.time() - initial
   Debugger.show_properties(img4, props, 0)
 
 

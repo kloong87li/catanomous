@@ -1,21 +1,18 @@
 import argparse, time
-from catan.main_controller import MainController
+from catan.dice_controller import DiceController
 
 def main():
   # Parse arguments
-  # -camera -r(eset) -in -out --config -ar
   parser = argparse.ArgumentParser(description='Use CV to analyze Catan board.')
   parser.add_argument('-t', '--test', action="store_true", default=False,
                      help='Run test.')
-  parser.add_argument('-rh', '--reset_hex', action="store_true", default=False,
-                     help='Reset Hexagons.')
   args = vars(parser.parse_args())
 
 
-  controller = MainController()
+  controller = DiceController()
  
   if args['test']:
-    controller.start_test(args['reset_hex'])
+    controller.start_test()
   else:
     controller.start()
 
