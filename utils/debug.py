@@ -46,7 +46,7 @@ class Debugger(object):
         color = (0, 0, 255) if c.isupper() else (0, 255, 0)
         cv2.circle(img, tuple(pt), 25, color, 1)
 
-        print tile._resource, tile._number, prop_list
+      print tile._resource, tile._number, prop_list
       
     GUIUtils.update_image(img)
     cv2.waitKey(ui_delay)
