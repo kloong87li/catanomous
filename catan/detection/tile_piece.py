@@ -70,7 +70,9 @@ class PieceDetector(object):
       bounds = self._config.get('PIECE_COLOR_'+color, img)
       range_mask = CVUtils.range_mask(piece_roi, bounds[0], bounds[1])
       num_ones = np.sum(range_mask) / 255
+      print color, num_ones
       if num_ones > self._PIECE_AREA_THRESH:
+        print 'FOUND'
         piece_color = color.lower()
         break
 
@@ -78,7 +80,6 @@ class PieceDetector(object):
     bounds = self._config.get('PIECE_MARKER_BLACK', img)
     range_mask = CVUtils.range_mask(hsv, bounds[0], bounds[1])
     num_ones = np.sum(range_mask) / 255
-    print color, num_ones
     if num_ones > self._BLACK_THRESH and piece_color is not None:
       return piece_color.upper()
 

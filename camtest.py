@@ -24,8 +24,8 @@ def process_token(token, camera):
     value = raw_input("New value: ")
     camera.set_setting(token, int(value))
 
-def get_picture(camera):
-  img = camera.capture()
+def get_picture(camera, config=None):
+  img = camera.capture(config)
   GUIUtils.update_image(imutils.resize(img, width=1200))
   cv2.waitKey(100)
   return img
@@ -43,6 +43,7 @@ def main():
 
     while (True):
       print "Enter a camera setting to change. (or 'P' to preview, 'X' to quit, 'V' to see current settings, 'S' to save image, 'L' to load config)"
+      print "1 to save hexagon pic, 2 to save resource pic"
       token = raw_input("Input: ")
 
       if token == 'P':
@@ -63,6 +64,12 @@ def main():
         config_json = CVConfig.load_json(config_path)
         camera._set_config(config_json)
         get_picture(camera)
+      elif token =='1':
+        img = get_picture(camera, CVConfig.load_json("config/camera_hex.json"))
+        CVUtils.save_img(img, "images/test_hex.png")
+      elif token =='2':
+        img = get_picture(camera)
+        CVUtils.save_img(img, "images/test_resource.png")
       else:
         process_token(token, camera)
         get_picture(camera)

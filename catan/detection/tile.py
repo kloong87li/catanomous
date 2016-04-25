@@ -38,14 +38,13 @@ class TileDetector(object):
     self._hex_mask = np.zeros((hex_img.shape[0], hex_img.shape[1]), np.uint8)
     cv2.drawContours(self._hex_mask, [contour], -1, [255, 255, 255], thickness=-1)
     
-    self._circle = self._detect_circle(hex_img)
     self._vertices = self._get_vertices(contour)
     self._resource = None
     self._number = None
 
 
   # Detects the resource using the result of the kmeans algo
-  def detect_resource(self, kmeans_res):
+  def detect_resource(self, img, kmeans_res):
     if self._circle is None:
       self._resource = 'DESERT'
     else:
@@ -89,6 +88,7 @@ class TileDetector(object):
   # Returns mean color of this hexagon
   # includes some preprocessing to help make each mean unique
   def get_representative_color(self, color_board_img):
+    self._circle = self._detect_circle(color_board_img)
     roi = self._get_hex_roi(color_board_img)
     
     # Eliminate circlular number piece
