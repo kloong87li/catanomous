@@ -85,8 +85,12 @@ class MainController(object):
       token = raw_input("Input: ")
 
       if token == '1':
-        save = raw_input("Save?") == 'Y'
-        self._handle_hexagon_init(save, debug=True)
+        new_image = raw_input("New image?" ) == 'Y'
+        if new_image:
+          save = raw_input("Save?") == 'Y'
+          self._handle_hexagon_init(save, debug=True)
+        else:
+          self._game.init_game(None)
       elif token == '2':
         self._handle_resource_init(debug=True)
       elif token == '3':
@@ -105,6 +109,8 @@ class MainController(object):
     if reset_hexes:
       self._handle_hexagon_init(True, debug=True)
       self._config.save_cv_config(self._CONFIG_FILE)
+    else:
+      self._game.init_game(None)
 
     self._handle_resource_init(debug=True)
     self._config.save_cv_config(self._CONFIG_FILE)
