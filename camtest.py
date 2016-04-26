@@ -43,7 +43,7 @@ def main():
 
     while (True):
       print "Enter a camera setting to change. (or 'P' to preview, 'X' to quit, 'V' to see current settings, 'S' to save image, 'L' to load config, 'SC' to save config)"
-      print "1 to save hexagon pic, 2 to save resource pic"
+      print "1 to save hexagon pic, 2 to save resource pic, 3 to save num pic"
       token = raw_input("Input: ")
 
       if token == 'P':
@@ -75,6 +75,9 @@ def main():
       elif token =='2':
         img = get_picture(camera)
         CVUtils.save_img(img, "images/test_resource.png")
+      elif token =='3':
+        img = get_picture(camera, CVConfig.load_json("config/camera_nums.json"))
+        CVUtils.save_img(img, "images/test_nums.png")
       else:
         process_token(token, camera)
         get_picture(camera)
