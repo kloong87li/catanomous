@@ -11,7 +11,12 @@ class PieceDetector(object):
   _ROI_RADIUS = 60 # region of interest radius when looking for pieces around a vertex
   _PLAYER_COLORS = ['RED', 'BLUE', 'ORANGE', 'WHITE']
   _PIECE_AREA_RADIUS = 10
-  _PIECE_AREA_THRESH = 40
+  _PIECE_AREA_THRESH = {
+      'RED': 40,
+      'BLUE': 40,
+      'ORANGE': 40,
+      'WHITE': 80,
+    }
   _BLACK_THRESH = 100
   _MARKER_DIST_FROM_CENTER = 40
 
@@ -71,7 +76,7 @@ class PieceDetector(object):
       bounds = self._config.get('PIECE_COLOR_'+color, img)
       range_mask = CVUtils.range_mask(piece_roi, bounds[0], bounds[1])
       num_ones = np.sum(range_mask) / 255
-      if num_ones > self._PIECE_AREA_THRESH and num_ones > piece_num_ones:
+      if num_ones > self._PIECE_AREA_THRESH[color] and num_ones > piece_num_ones:
         piece_color = color.lower()
 
     # Check if city or settlement by looking for black piece marker
