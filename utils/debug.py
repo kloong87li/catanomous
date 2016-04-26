@@ -43,10 +43,13 @@ class Debugger(object):
     for (tile, prop_list) in properties:
       for (pt, c) in prop_list:
         (x,y) = pt
-        color = (0, 0, 255) if c.isupper() else (0, 255, 0)
+        if c == 'None':
+          color = (255, 0, 0)
+        else:
+          color = (0, 0, 255) if c.isupper() else (0, 255, 0)
         cv2.circle(img, tuple(pt), 25, color, 1)
 
-      print tile._resource, tile._number, prop_list
+      print tile._resource, tile._number, [c for (pt, c) in prop_list]
       
     GUIUtils.update_image(img)
     cv2.waitKey(ui_delay)

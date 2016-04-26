@@ -151,7 +151,7 @@ class TileDetector(object):
     for i in xrange(len(vertices)):
       v = vertices[(top_i + i) % len(vertices)]
       
-      if prev is None or self._point_distance(prev, v) > h/3:
+      if prev is None or self._point_distance(prev, v) > int(h/2.75):
         prev = v
         def_vertex.append(v)
 
