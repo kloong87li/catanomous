@@ -43,8 +43,11 @@ class Debugger(object):
     for (tile, prop_list) in properties:
       for (pt, c) in prop_list:
         (x,y) = pt
-        if c == 'None' or c == 'NONE':
+        color = None
+        if c == 'NO_COLOR':
           color = (255, 0, 0)
+        elif c == 'TOO_FAR':
+          color = (255, 255, 0)
         else:
           color = (0, 0, 255) if c.isupper() else (0, 255, 0)
         cv2.circle(img, tuple(pt), 25, color, 1)

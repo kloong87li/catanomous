@@ -103,7 +103,7 @@ class MainController(object):
     return
 
 
-  def start_test(self, reset_hexes=False):
+  def start_test(self, reset_hexes=False, skip_resources=False):
     self._config = self._prepare_config(True)
     self._camera = Camera(self._config)
     self._camera.start()
@@ -112,8 +112,9 @@ class MainController(object):
     self._handle_hexagon_init(reset_hexes, debug=True)
     self._config.save_cv_config(self._CONFIG_FILE)
 
-    # self._handle_resource_init(debug=True)
-    # self._config.save_cv_config(self._CONFIG_FILE)
+    if not skip_resources:
+      self._handle_resource_init(debug=True)
+      self._config.save_cv_config(self._CONFIG_FILE)
 
     self._handle_dice_roll(1, debug=True)
     self._config.save_cv_config(self._CONFIG_FILE)
