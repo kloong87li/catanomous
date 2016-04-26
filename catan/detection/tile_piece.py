@@ -8,12 +8,12 @@ from math import sqrt
 
 class PieceDetector(object):
 
-  _ROI_RADIUS = 40 # region of interest radius when looking for pieces around a vertex
+  _ROI_RADIUS = 60 # region of interest radius when looking for pieces around a vertex
   _PLAYER_COLORS = ['RED', 'BLUE', 'ORANGE', 'WHITE']
   _PIECE_AREA_RADIUS = 5
   _PIECE_AREA_THRESH = 20
-  _BLACK_THRESH = 500
-  _MARKER_DIST_FROM_CENTER = 20
+  _BLACK_THRESH = 250
+  _MARKER_DIST_FROM_CENTER = 40
 
   def __init__(self, config):
     self._config = config
@@ -65,14 +65,12 @@ class PieceDetector(object):
     piece_roi = CVUtils.mask_image(hsv, mask)
 
     # Determine color of piece
-    piece_color = None
+    piece_color = 'None'
     for color in self._PLAYER_COLORS:
       bounds = self._config.get('PIECE_COLOR_'+color, img)
       range_mask = CVUtils.range_mask(piece_roi, bounds[0], bounds[1])
       num_ones = np.sum(range_mask) / 255
-      print color, num_ones
       if num_ones > self._PIECE_AREA_THRESH:
-        print '--- FOUND ^'
         piece_color = color.lower()
         break
 
