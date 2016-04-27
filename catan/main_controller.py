@@ -67,7 +67,7 @@ class MainController(object):
 
     if debug:
       print "Resources/numbers detected, moving on to pieces, time: ", time.time() - initial
-      Debugger.show_resources(res_img, tiles, 0)
+      Debugger.show_resources(num_img, tiles, 0)
 
   # Called to detect new properties and deal cards based on roll
   def _handle_dice_roll(self, num, debug=False):

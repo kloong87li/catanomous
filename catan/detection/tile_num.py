@@ -39,7 +39,7 @@ class TileNumDetector(object):
     #   img = cv2.erode(img, np.ones((erosion, erosion), np.uint8))
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    thresh = self._config.get('TILE_NUM_THRESH', gray)
+    thresh = self._config.get('TILE_NUM_THRESH', gray, True)
     img = cv2.threshold(gray, thresh + 5 * attempt, 255, cv2.THRESH_BINARY)[1]
 
     # Only retain large enough contours
@@ -63,6 +63,7 @@ class TileNumDetector(object):
     # Must make PIL image to run tesseract on it
     pil_image = Image.fromarray(img)
     num = pytesseract.image_to_string(pil_image, config="-psm 7 digits")
+    print "Attempt:", attempt, "Num:", num
     return num
 
 
