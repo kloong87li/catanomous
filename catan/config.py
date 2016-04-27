@@ -57,10 +57,11 @@ class CVConfig(object):
       'TILE_COLOR_SHEEP': [([27, 0, 0], [179, 255, 255]), ColorThreshTrackbar],
 
       'PIECE_HOUGH_CIRCLE': [((20, 60), (45, 25), 10), HoughCircleTrackbar],
-      'PIECE_COLOR_RED': [([1, 1, 1], [9, 255, 255]), ColorThreshTrackbar],
+      'PIECE_COLOR_RED': [([0, 102, 203], [5, 255, 255]), ColorThreshTrackbar],
+      'PIECE_COLOR_RED2': [([175, 102, 203], [179, 255, 255]), ColorThreshTrackbar],
       'PIECE_COLOR_BLUE': [([44, 2, 1], [179, 255, 101]), ColorThreshTrackbar],
       'PIECE_COLOR_ORANGE': [([16, 1, 220], [15, 255, 255]), ColorThreshTrackbar],
-      'PIECE_COLOR_WHITE': [([28, 1, 187], [27, 255, 224]), ColorThreshTrackbar],
+      'PIECE_COLOR_GREEN': [([28, 1, 187], [27, 255, 224]), ColorThreshTrackbar],
 
       'PIECE_MARKER_BLACK': [([0, 0, 0], [15, 15, 15]), ColorThreshTrackbar],
       "PIECES_HOUGH_CIRCLE": [((20, 60), (45, 25), 10), HoughCircleTrackbar],

@@ -9,13 +9,13 @@ from math import sqrt
 class PieceDetector(object):
 
   _ROI_RADIUS = 60 # region of interest radius when looking for pieces around a vertex
-  _PLAYER_COLORS = ['RED', 'BLUE', 'ORANGE', 'WHITE']
+  _PLAYER_COLORS = ['RED', 'BLUE', 'ORANGE', 'GREEN']
   _PIECE_AREA_RADIUS = 30
   _PIECE_AREA_THRESH = {
       'RED': 200,
       'BLUE': 200,
       'ORANGE': 200,
-      'WHITE': 200,
+      'GREEN': 200,
     }
   _BLACK_THRESH = 200
   _MARKER_DIST_FROM_CENTER = 30
@@ -75,10 +75,14 @@ class PieceDetector(object):
     for color in self._PLAYER_COLORS:
       bounds = self._config.get('PIECE_COLOR_'+color, orig_img)
       range_mask = CVUtils.range_mask(piece_roi, bounds[0], bounds[1])
+
+      # Special case for red
+      if color == 'RED':
+        bounds = self._config.get('PIECE_COLOR_RED2', orig_img)
+        range_mask = cv2.bitwise_or(range_mask, CVUtils.range_mask(piece_roi, bounds[0], bounds[1]))
       num_ones = np.sum(range_mask) / 255
       if num_ones > self._PIECE_AREA_THRESH[color] and num_ones > piece_num_ones:
-        if not (color == 'WHITE' and piece_color != 'NO_COLOR'):
-          piece_color = color.lower() + str(num_ones)
+        piece_color = color.lower() + str(num_ones)
 
     # Check if city or settlement by looking for black piece marker
     bounds = self._config.get('PIECE_MARKER_BLACK', img)
