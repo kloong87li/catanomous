@@ -15,9 +15,9 @@ class PieceDetector(object):
       'RED': 200,
       'BLUE': 200,
       'ORANGE': 200,
-      'WHITE': 150,
+      'WHITE': 200,
     }
-  _BLACK_THRESH = 150
+  _BLACK_THRESH = 200
   _MARKER_DIST_FROM_CENTER = 30
 
   def __init__(self, config):
@@ -85,7 +85,7 @@ class PieceDetector(object):
     range_mask = CVUtils.range_mask(hsv, bounds[0], bounds[1])
     num_ones = np.sum(range_mask) / 255
     if num_ones > self._BLACK_THRESH and piece_color is not None:
-      return piece_color.upper()
+      return piece_color.upper() + "/" + str(num_ones)
 
     return piece_color
 

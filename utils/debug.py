@@ -44,9 +44,9 @@ class Debugger(object):
       for (pt, c) in prop_list:
         (x,y) = pt
         color = None
-        if c == 'NO_COLOR':
+        if 'NO_COLOR' in c:
           color = (255, 0, 0)
-        elif c == 'TOO_FAR':
+        elif 'TOO_FAR' in c:
           color = (255, 255, 0)
         else:
           color = (0, 0, 255) if c.isupper() else (0, 255, 0)
