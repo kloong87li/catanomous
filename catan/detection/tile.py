@@ -57,7 +57,7 @@ class TileDetector(object):
 
     # Isolate circle area
     roi = self._get_roi(img)
-    mask = self._get_circle_mask(roi, scale=.95)
+    mask = self._get_circle_mask(roi, scale=.75)
     img = CVUtils.mask_image(roi, mask)
 
     num = self._num_detect.detect_number(img, mask, self._circle)
@@ -130,8 +130,12 @@ class TileDetector(object):
     img = cv2.erode(cv2.medianBlur(hex_roi, 3), np.ones((1, 1), np.uint8))
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
-    circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1, w*3/4,
-                                param1=60,param2=30,minRadius=int(w/7.7),maxRadius=int(w/2.5))
+
+    hough_config = self._config.get("TILE_HOUGH_CIRCLE", img)
+    circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/hough_config[2],
+                                param1=hough_config[0][1],
+                                param2=hough_config[0][0],
+                                minRadius=h/hough_config[1][0], maxRadius=h/hough_config[1][1])
     if circles is None:
       return None
 

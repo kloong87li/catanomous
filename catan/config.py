@@ -43,6 +43,7 @@ class CVConfig(object):
       "BOARD_HOUGH_CIRCLE": [((20, 60), (45, 25), 10), HoughCircleTrackbar],
       "BOARD_HOUGH_LINE": [(65, 46, 10), HoughLineTrackbar],
 
+      'TILE_HOUGH_CIRCLE': [((30, 60), (45, 25), 10), HoughCircleTrackbar],
       "TILE_NUM_THRESH": [90, ThreshTrackbar],
       "TILE_AMPLIFY_WHEAT": [([0, 200, 200], [36, 255, 255]), ColorThreshTrackbar],
       "TILE_AMPLIFY_BRICK": [([2, 149, 117], [9, 255, 255]), ColorThreshTrackbar],
