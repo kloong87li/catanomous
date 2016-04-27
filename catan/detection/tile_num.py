@@ -13,19 +13,19 @@ class TileNumDetector(object):
 
   _VALID_NUMS = ['2', '3', '4', '5', '6', '8', '9', '10', '11', '12']
 
-  def __init__(self):
-    pass
+  def __init__(self, config):
+    self._config = config
 
   # detects number given the img, circle mask, and circle tuple
   def detect_number(self, img, mask, circle):
     img = CVUtils.replace_color(img, CVUtils.invert_mask(mask), [255,255,255])
 
     # Increase erosion until a valid number is found
-    erosion = 0
-    num = self._attempt_detection(img, np.copy(mask), circle, erosion)
-    # while (num not in self._VALID_NUMS and erosion <= 3):
-    #   erosion = erosion + 1
-    #   num = self._attempt_detection(img, np.copy(mask), circle, erosion)
+    attempt = 0
+    num = self._attempt_detection(img, np.copy(mask), circle, attempt)
+    while (num not in self._VALID_NUMS and attempt <= 3):
+      num = self._attempt_detection(img, np.copy(mask), circle, attempt)
+      attempt = attempt + 1
 
     if num not in self._VALID_NUMS:
       return None
@@ -33,11 +33,14 @@ class TileNumDetector(object):
       return num
 
 
-  def _attempt_detection(self, img, mask, circle, erosion=0):
+  def _attempt_detection(self, img, mask, circle, attempt=0):
     # Isolate number by thresholding and apply erosion if specified    
-    if erosion > 0:
-      img = cv2.erode(img, np.ones((erosion, erosion), np.uint8))
-    img = cv2.threshold(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), 140, 255, cv2.THRESH_BINARY)[1]
+    # if erosion > 0:
+    #   img = cv2.erode(img, np.ones((erosion, erosion), np.uint8))
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    thresh = self._config.get('TILE_NUM_THRESH', gray)
+    img = cv2.threshold(gray, thresh + 5 * attempt, 255, cv2.THRESH_BINARY)[1]
 
     # Only retain large enough contours
     contours = cv2.findContours(CVUtils.invert_mask(img), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
@@ -59,6 +62,7 @@ class TileNumDetector(object):
 
     # Must make PIL image to run tesseract on it
     pil_image = Image.fromarray(img)
-    return pytesseract.image_to_string(pil_image, config="-psm 7 digits")
+    num = pytesseract.image_to_string(pil_image, config="-psm 7 digits")
+    return num
 
 

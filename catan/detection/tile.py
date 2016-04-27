@@ -31,7 +31,7 @@ class TileDetector(object):
 
     # Initialize detectors
     self._color_detect = TileColorDetector(config)
-    self._num_detect = TileNumDetector()
+    self._num_detect = TileNumDetector(config)
     self._piece_detect = PieceDetector(config)
 
     # Generate the mask for isolating each hexagon
@@ -131,7 +131,7 @@ class TileDetector(object):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
     circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1, w*3/4,
-                                param1=60,param2=30,minRadius=int(w/7.75),maxRadius=int(w/2.5))
+                                param1=60,param2=30,minRadius=int(w/7.7),maxRadius=int(w/2.5))
     if circles is None:
       return None
 

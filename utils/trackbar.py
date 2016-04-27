@@ -182,6 +182,50 @@ class GrayThreshTrackbar(TrackbarWindow):
     return (self._values['Lower'], self._values['Upper'])
 
 
+class ThreshTrackbar(TrackbarWindow):
+  _WINDOW_NAME = 'Threshold'
+
+  def __init__(self, gray, defaults=None, name=None, replaced_color=None):
+    if name is not None:
+      self._WINDOW_NAME = name
+
+    self._gray = gray
+    # self._gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    self._maxes = {
+      'Thresh': 255,
+    }
+
+    if defaults is None:
+      self._values = {
+        'Thresh': 127,
+      }
+    else:
+      self._values = {
+        'Thresh': defaults
+      }
+
+    super(ThreshTrackbar, self).__init__()
+
+  def get_window_name(self):
+    return self._WINDOW_NAME
+
+  def on_value_change(self, value, name):
+    self._values[name] = value
+
+  def get_image(self):
+    thresh = self._values['Thresh']
+    result = cv2.threshold(self._gray, thresh, 255, cv2.THRESH_BINARY)[1]
+    return (result, 700)
+
+  def get_maxes(self):
+    return self._maxes
+
+  def get_values(self):
+    return self._values
+
+  def get_result(self):
+    return self._values['Thresh']
 
 
 class CannyTrackbar(TrackbarWindow):

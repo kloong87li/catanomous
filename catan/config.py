@@ -1,5 +1,5 @@
 from utils.gui import GUIUtils
-from utils.trackbar import CannyTrackbar, ColorThreshTrackbar, HoughCircleTrackbar, HoughLineTrackbar
+from utils.trackbar import CannyTrackbar, ColorThreshTrackbar, HoughCircleTrackbar, HoughLineTrackbar, ThreshTrackbar
 
 import json
 import numpy as np
@@ -43,6 +43,7 @@ class CVConfig(object):
       "BOARD_HOUGH_CIRCLE": [((20, 60), (45, 25), 10), HoughCircleTrackbar],
       "BOARD_HOUGH_LINE": [(65, 46, 10), HoughLineTrackbar],
 
+      "TILE_NUM_THRESH": [90, ThreshTrackbar],
       "TILE_AMPLIFY_WHEAT": [([0, 200, 200], [36, 255, 255]), ColorThreshTrackbar],
       "TILE_AMPLIFY_BRICK": [([2, 149, 117], [9, 255, 255]), ColorThreshTrackbar],
       "TILE_AMPLIFY_WOOD": [([0, 81, 81], [46, 154, 187]), ColorThreshTrackbar],

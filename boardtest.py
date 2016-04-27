@@ -48,12 +48,14 @@ def prepare_config(args):
 def auto_test(game, camera, args):
   img1 = get_image(camera, "test_hex.png")
   img2 = get_image(camera, "test_resource.png")
+  img_nums = get_image(camera, "test_nums.png")
+
   img3 = get_image(camera, "test_pieces1.png")
   img4 = get_image(camera, "test_pieces2.png")
 
   initial = time.time()
   hexes = game.init_game(img1)
-  game.new_game(img2, img2)
+  game.new_game(img2, img_nums)
 
   print "Time for setup:", time.time() - initial
   Debugger.show_hexagons(img2, hexes, 0)
@@ -62,10 +64,10 @@ def auto_test(game, camera, args):
   if args['sh']:
     game.save_hexagons("config/hexagons.npy")
 
-  initial = time.time()
-  props = game.dice_rolled(1, img4)
-  print "Time for pieces:", time.time() - initial
-  Debugger.show_properties(img4, props, 0)
+  # initial = time.time()
+  # props = game.dice_rolled(1, img4)
+  # print "Time for pieces:", time.time() - initial
+  # Debugger.show_properties(img4, props, 0)
 
 
 def main():
