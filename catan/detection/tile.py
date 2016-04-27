@@ -57,7 +57,7 @@ class TileDetector(object):
 
     # Isolate circle area
     roi = self._get_roi(img)
-    mask = self._get_circle_mask(roi, scale=.75)
+    mask = self._get_circle_mask(roi, scale=.7)
     img = CVUtils.mask_image(roi, mask)
 
     num = self._num_detect.detect_number(img, mask, self._circle)

@@ -24,8 +24,9 @@ class TileNumDetector(object):
     attempt = 0
     num = self._attempt_detection(img, np.copy(mask), circle, attempt)
     while (num not in self._VALID_NUMS and attempt <= 3):
-      num = self._attempt_detection(img, np.copy(mask), circle, attempt)
       attempt = attempt + 1
+      num = self._attempt_detection(img, np.copy(mask), circle, attempt)
+      
 
     if num not in self._VALID_NUMS:
       return None
@@ -39,8 +40,8 @@ class TileNumDetector(object):
     #   img = cv2.erode(img, np.ones((erosion, erosion), np.uint8))
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    thresh = self._config.get('TILE_NUM_THRESH', gray, True)
-    img = cv2.threshold(gray, thresh + 5 * attempt, 255, cv2.THRESH_BINARY)[1]
+    thresh = self._config.get('TILE_NUM_THRESH', gray)
+    img = cv2.threshold(gray, thresh + 7 * attempt, 255, cv2.THRESH_BINARY)[1]
 
     # Only retain large enough contours
     contours = cv2.findContours(CVUtils.invert_mask(img), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
