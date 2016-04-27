@@ -31,6 +31,10 @@ class BoardDetector(object):
   def get_hex_contours(self):
     return [h.get_contour() for h in self._hexagons]
 
+  def reset_res_and_num(self):
+    for h in self._hexagons:
+      h.reset_res_and_num()
+
   def detect_resources(self, img):
     mean_colors = np.copy(img)
 

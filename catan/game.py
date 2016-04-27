@@ -17,6 +17,7 @@ class CatanomousGame(object):
     return self._board_detector._hexagons  #TODO temporary, remove this
 
   def new_game(self, resource_img, number_img):
+    self._board_detector.reset_res_and_num()
     self._board_detector.detect_resources(resource_img)
     self._board_detector.detect_numbers(number_img)
     return self._board_detector._hexagons # TODO temporary?

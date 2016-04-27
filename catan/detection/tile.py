@@ -42,6 +42,9 @@ class TileDetector(object):
     self._resource = None
     self._number = None
 
+  def reset_res_and_num(self):
+    self._resource = None
+    self._number = None
 
   # Detects the resource using the result of the kmeans algo
   def detect_resource(self, img, kmeans_res):
