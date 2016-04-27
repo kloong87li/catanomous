@@ -12,13 +12,13 @@ class PieceDetector(object):
   _PLAYER_COLORS = ['RED', 'BLUE', 'ORANGE', 'GREEN']
   _PIECE_AREA_RADIUS = 30
   _PIECE_AREA_THRESH = {
-      'RED': 200,
-      'BLUE': 200,
-      'ORANGE': 200,
-      'GREEN': 200,
+      'RED': 250,
+      'BLUE': 250,
+      'ORANGE': 250,
+      'GREEN': 250,
     }
   _BLACK_THRESH = 200
-  _MARKER_DIST_FROM_CENTER = 30
+  _MARKER_DIST_FROM_CENTER = 35
 
   def __init__(self, config):
     self._config = config
