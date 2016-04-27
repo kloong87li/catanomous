@@ -57,6 +57,7 @@ class BoardDetector(object):
       h.detect_number(img)
 
   def detect_properties(self, img):
+    orig = img
     # Get circles only
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
@@ -73,7 +74,7 @@ class BoardDetector(object):
 
     tiles = []
     for tile in self._hexagons:
-      properties = tile.detect_properties(img)
+      properties = tile.detect_properties(img, orig)
       tiles.append((tile, properties))
     return tiles
 

@@ -23,10 +23,10 @@ class PieceDetector(object):
   def __init__(self, config):
     self._config = config
 
-  def detect_properties(self, img, vertices):
+  def detect_properties(self, img, vertices, original_img):
     props = []
     for v in vertices:
-      piece_color = self._detect_piece_color(v, img)
+      piece_color = self._detect_piece_color(v, img, original_img)
       if piece_color is not None:
         props.append((v, piece_color))
 
@@ -36,7 +36,7 @@ class PieceDetector(object):
   def _point_distance(self, pt1, pt2):
     return sqrt((pt1[0] - pt2[0])**2 + (pt1[1] - pt2[1])**2)
 
-  def _detect_piece_color(self, v, img):
+  def _detect_piece_color(self, v, img, orig_img):
     # isolate region around vertex
     rd = self._ROI_RADIUS
     (l, r, t, b) = (v[0]-rd, v[0]+rd, v[1]-rd, v[1]+rd)
@@ -73,11 +73,12 @@ class PieceDetector(object):
     piece_color = 'NO_COLOR'
     piece_num_ones = 0
     for color in self._PLAYER_COLORS:
-      bounds = self._config.get('PIECE_COLOR_'+color, img)
+      bounds = self._config.get('PIECE_COLOR_'+color, orig_img)
       range_mask = CVUtils.range_mask(piece_roi, bounds[0], bounds[1])
       num_ones = np.sum(range_mask) / 255
       if num_ones > self._PIECE_AREA_THRESH[color] and num_ones > piece_num_ones:
-        piece_color = color.lower()
+        if not (color == 'WHITE' and piece_color != 'NO_COLOR'):
+          piece_color = color.lower()
 
     # Check if city or settlement by looking for black piece marker
     bounds = self._config.get('PIECE_MARKER_BLACK', img)

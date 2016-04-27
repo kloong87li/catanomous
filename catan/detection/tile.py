@@ -76,8 +76,8 @@ class TileDetector(object):
     else:
       return False
 
-  def detect_properties(self, new_img):
-    return self._piece_detect.detect_properties(new_img, self._vertices)
+  def detect_properties(self, new_img, orig_img):
+    return self._piece_detect.detect_properties(new_img, self._vertices, orig_img)
 
   def get_contour(self):
     return self._contour
