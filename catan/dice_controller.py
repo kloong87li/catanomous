@@ -42,21 +42,28 @@ class DiceController(object):
     print "Time: ", time.time() - initial
 
     # TODO send to other raspi via bluetooth
-
+    if self._bt_client is not None:
+      self._bt_client.send(str(dice_roll))
 
   def start(self):
     self._config = self._prepare_config()
     self._camera = Camera(self._config)
     self._camera.start()
     self._dice_detector = DiceDetector(self._config)
+    self._bt_client = None
 
     while (True):
-      print '1 to detect dice roll'
+      print '1 to detect dice roll, 2 to enable bluetooth'
       token = raw_input("Input: ")
 
       if token == '1':
         self._handle_detect_dice()
+      elif token == '2':
+        self._bt_client = BluetoothClient()
+        self._bt_client.connect()
       elif token == 'X':
+        if self._bt_client is not None:
+          self._bt_client.send('\n')
         break
     return
     

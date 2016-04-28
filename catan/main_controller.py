@@ -12,6 +12,8 @@ from utils.camera import Camera
 from utils.debug import Debugger
 import time
 
+from utils.bluetooth import BluetoothServer
+
 class MainController(object):
   _IMAGE_WIDTH = 1200
   _HEX_FILE = "config/hexagons.npy"
@@ -81,14 +83,31 @@ class MainController(object):
       
     # TODO something with the instructions
 
-  def start(self):
+
+  def _listen_for_dice(debug=False):
+    self._bt_server.start()
+    sock = self._bt_server.accept()
+
+    while True:
+      num = self._bt_server.receive(sock)
+      if num == '\n':
+        break
+      
+      self._handle_dice_roll(num, debug)
+
+    self._bt_server.close(sock)
+    self._bt_server.close_server()
+
+
+  def start(self, enable_bt):
     self._config = self._prepare_config()
     self._camera = Camera(self._config)
     self._camera.start()
     self._game = CatanomousGame(self._config)
+    self._bt_server = BluetoothServer()
 
     while (True):
-      print '1 to init hexagons, 2 for resources/numbers, 3 for pieces'
+      print '1 to init hexagons, 2 for resources/numbers, 3 for pieces, 4 to use bluetooth'
       token = raw_input("Input: ")
 
       if token == '1':
@@ -98,6 +117,8 @@ class MainController(object):
         self._handle_resource_init(debug=True)
       elif token == '3':
         self._handle_dice_roll(1, debug=True)
+      elif token == '4':
+        self._listen_for_dice(debug=True)
       elif token == 'X':
         break
     return
