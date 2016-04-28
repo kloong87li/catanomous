@@ -43,6 +43,12 @@ class TileDetector(object):
     self._resource = None
     self._number = None
 
+  def get_num(self):
+    return self._number
+
+  def get_res(self):
+    return self._resource
+
   def reset_res_and_num(self):
     self._resource = None
     self._number = None

@@ -31,7 +31,7 @@ class TileNumDetector(object):
     if num not in self._VALID_NUMS:
       return None
     else:
-      return num
+      return int(num)
 
 
   def _attempt_detection(self, img, mask, circle, attempt=0):

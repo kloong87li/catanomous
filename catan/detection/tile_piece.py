@@ -18,7 +18,7 @@ class PieceDetector(object):
       'GREEN': 250,
     }
   _BLACK_THRESH = 200
-  _MARKER_DIST_FROM_CENTER = 35
+  _MARKER_DIST_FROM_CENTER = 25 # 35
 
   def __init__(self, config):
     self._config = config
@@ -82,14 +82,14 @@ class PieceDetector(object):
         range_mask = cv2.bitwise_or(range_mask, CVUtils.range_mask(piece_roi, bounds[0], bounds[1]))
       num_ones = np.sum(range_mask) / 255
       if num_ones > self._PIECE_AREA_THRESH[color] and num_ones > piece_num_ones:
-        piece_color = color.lower() + str(num_ones)
+        piece_color = color.lower()
 
     # Check if city or settlement by looking for black piece marker
     bounds = self._config.get('PIECE_MARKER_BLACK', img)
     range_mask = CVUtils.range_mask(hsv, bounds[0], bounds[1])
     num_ones = np.sum(range_mask) / 255
     if num_ones > self._BLACK_THRESH and piece_color is not None:
-      return piece_color.upper() + "/" + str(num_ones)
+      return piece_color.upper()
 
     return piece_color
 

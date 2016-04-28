@@ -28,10 +28,20 @@ class CatanomousGame(object):
 
   def dice_rolled(self, num, updated_img):
     # Return instructions for card dealing
-    properties = self._board_detector.detect_properties(updated_img)
+    detected = self._board_detector.detect_properties(updated_img)
     robber_tile = self._board_detector.detect_robber(updated_img)
 
-    
-    return properties #TODO temporary, remove this
+    resources = ['WHEAT', 'SHEEP', 'BRICK', 'IRON', 'WOOD']
+    players = ['GREEN', 'RED', 'BLUE', 'BROWN']
+    instructions = {p: {r: 0 for r in resources} for p in players}
+    for (tile, plist) in detected:
+      if num == tile.get_num() and tile != robber_tile:
+        for (pt, player) in plist:
+          count = 2 if player.isupper() else 1
+          instructions[player.upper()][tile.get_res()] += count
+
+    print instructions
+
+    return detected #TODO temporary, remove this
 
 
