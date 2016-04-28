@@ -18,6 +18,7 @@ class DiceController(object):
   _BUTTON_PIN = 17
 
   def __init__(self):
+    self._bt_client = None
     self._gpio = GPIOController()
     self._gpio.init_button(self._BUTTON_PIN)
     return
