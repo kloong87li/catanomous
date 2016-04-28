@@ -9,12 +9,12 @@ from math import sqrt
 class PieceDetector(object):
 
   _ROI_RADIUS = 60 # region of interest radius when looking for pieces around a vertex
-  _PLAYER_COLORS = ['RED', 'BLUE', 'ORANGE', 'GREEN']
+  _PLAYER_COLORS = ['RED', 'BLUE', 'BROWN', 'GREEN']
   _PIECE_AREA_RADIUS = 30
   _PIECE_AREA_THRESH = {
       'RED': 250,
       'BLUE': 250,
-      'ORANGE': 250,
+      'BROWN': 250,
       'GREEN': 250,
     }
   _BLACK_THRESH = 200
