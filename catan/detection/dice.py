@@ -25,4 +25,6 @@ class DiceDetector(object):
                                 param2=hough_config[0][0],
                                 minRadius=h/hough_config[1][0],maxRadius=h/hough_config[1][1])
 
+    if circles is None:
+      return 0
     return len(circles[0])

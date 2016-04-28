@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 from catan.detection.dice import DiceDetector
-
+from catan.config import CVConfig
 from utils.camera import Camera
 from utils.debug import Debugger
 import time
@@ -39,7 +39,7 @@ class DiceController(object):
     dice_roll = self._dice_detector.detect_roll(img)
 
     print "Rolled: ", dice_roll
-    print "Time: ", initial - time.time()
+    print "Time: ", time.time() - initial
 
     # TODO send to other raspi via bluetooth
 
