@@ -62,7 +62,7 @@ class MainController(object):
 
     if debug:
       print "Hexagons detected, moving on to resources, time: ", time.time() - initial
-      Debugger.show_hexagons(img, hexes, 0)
+      Debugger.show_hexagons(img, hexes, 250)
 
   # Called to detect resources and numbers
   def _handle_resource_init(self, debug=False):
@@ -74,7 +74,7 @@ class MainController(object):
 
     if debug:
       print "Resources/numbers detected, moving on to pieces, time: ", time.time() - initial
-      Debugger.show_resources(num_img, tiles, 0)
+      Debugger.show_resources(num_img, tiles, 250)
 
     self._debugger.log("Resource/number detection finished.", "RESOURCES")
     self._debugger.log_tiles(tiles)
@@ -133,26 +133,31 @@ class MainController(object):
         self._gpio.led_off()
         self._debugger.accept()
         self._gpio.led_on()
+	self._debugger.log("Connected to bluetooth debugger.", "CONNECT")
       else:
+	self._debugger.log("No debugger chosen.", "CONNECT")
         self._gpio.led_blink(3)
 
       time.sleep(1.5)
       try:
         # Wait for dice detector to connect
         self._gpio.led_off()
+        self._debugger.log("Waiting for dicebox to connect...", "CONNECT")
         dice_sock = self._bt_server.accept()
         self._gpio.led_on()
         self._debugger.log("Dice box connected.", "CONNECT")
 
         # Wait for HOLD to indicate reset hexagons, PRESS means load saved
-        reset_hexagons = self._gpio.wait_for_press_or_hold(self._BUTTON_PIN) == 'HOLD':
-        self._debugger.log("Reset hexagons: " + reset_hexagons, "HEXAGONS")
+	self._debugger.log("HOLD to reset hexes, PRESS to load.", "INPUT")
+        reset_hexagons = self._gpio.wait_for_press_or_hold(self._BUTTON_PIN) == 'HOLD'
+        self._debugger.log("Reset hexagons: " + str(reset_hexagons), "HEXAGONS")
         self._gpio.led_off()
         self._handle_hexagon_init(reset_hexagons, debug=visual_debug)
         self._gpio.led_on()
         self._debugger.log("Hexagons detected.", "HEXAGONS")
 
         # PRESS to initialize resources and numbers
+        self._debugger.log("PRESS after setting up resources/numbers", "INPUT")
         self._gpio.wait_for_press(self._BUTTON_PIN)
         self._gpio.led_off()
         self._debugger.log("Starting resource/number detection.", "RESOURCES")
@@ -160,13 +165,14 @@ class MainController(object):
         self._gpio.led_on()
 
         # Wait for signals from dice detector
+	self._debugger.log("Waiting for dice rolls...", "INPUT")
         self._listen_for_dice(dice_sock, debug=visual_debug)
 
-      except e:
+      except Exception as e:
         # Send to debugger and reraise to blink LED
         self._debugger.log(str(e), 'ERROR')
         raise e
-    except e:
+    except Exception as e:
       # BLink to indicate an error occured
       while True:
         self._gpio.led_on()
@@ -193,7 +199,7 @@ class MainController(object):
       elif token == '2':
         self._handle_resource_init(debug=True)
       elif token == '3':
-	      num = raw_input("Num? ")
+	num = raw_input("Num? ")
         self._handle_dice_roll(int(num), debug=True)
       elif token == '4':
         self._bt_server.start()

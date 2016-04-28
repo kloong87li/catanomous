@@ -67,23 +67,24 @@ class Debugger(object):
 
 
   def log(self, msg, tag):
-    data = '[' + tag + '] ' + msg
+    data = '[' + tag + '] ' + msg + '\n'
 
-    if self._client_sock is None:
-      print data
-    else:
-      self._bt_server.send(self._client_sock, data)
-    return
+    print data
+    if self._client_sock is not None:
+      try:
+      	self._bt_server.send(self._client_sock, data)
+      except Exception as e:
+	print "[BLUETOOTH] Debugger disconnected"
+	self._client_sock = None
 
   def log_tiles(self, tiles):
-    resources = [t._resource + " " + t._number for t in tiles]
+    resources = [t._resource + " " + str(t._number) for t in tiles]
     self.log(str(resources), 'RESOURCES')
 
   def log_pieces(self, pieces):
-    for (tile, prop_list) in properties:
-      for (pt, c) in prop_list:
-        msg = tile._resource + " " + tile._number + " " + str([c for (pt, c) in prop_list])
-        self.log(msg, 'PIECES')
+    for (tile, prop_list) in pieces:
+      msg = tile._resource + " " + str(tile._number) + " " + str([c for (pt, c) in prop_list])
+      self.log(msg, 'PIECES')
     return
 
   def log_instructions(self, instructions):
