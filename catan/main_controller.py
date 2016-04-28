@@ -12,7 +12,7 @@ from utils.camera import Camera
 from utils.debug import Debugger
 import time
 
-from utils.bluetooth import BluetoothServer
+from utils.bt_utils import BluetoothServer
 
 class MainController(object):
   _IMAGE_WIDTH = 1200
@@ -84,7 +84,7 @@ class MainController(object):
     # TODO something with the instructions
 
 
-  def _listen_for_dice(debug=False):
+  def _listen_for_dice(self, debug=False):
     self._bt_server.start()
     sock = self._bt_server.accept()
 
@@ -99,7 +99,7 @@ class MainController(object):
     self._bt_server.close_server()
 
 
-  def start(self, enable_bt):
+  def start(self):
     self._config = self._prepare_config()
     self._camera = Camera(self._config)
     self._camera.start()

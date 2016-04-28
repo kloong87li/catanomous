@@ -8,6 +8,7 @@ from catan.config import CVConfig
 from utils.camera import Camera
 from utils.debug import Debugger
 import time
+from utils.bt_utils import BluetoothClient
 
 class DiceController(object):
   _IMAGE_WIDTH = 1200
