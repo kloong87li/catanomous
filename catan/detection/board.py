@@ -65,7 +65,7 @@ class BoardDetector(object):
     # Get circles only
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     (h, w) = gray.shape
-    hough_config = self._config.get("PIECES_HOUGH_CIRCLE", img, True)
+    hough_config = self._config.get("PIECES_HOUGH_CIRCLE", img)
     circles = cv2.HoughCircles(gray, cv2.HOUGH_GRADIENT,1, h/hough_config[2],
                                 param1=hough_config[0][1],
                                 param2=hough_config[0][0],
@@ -85,7 +85,7 @@ class BoardDetector(object):
   def detect_robber(self, img):
     blocked = None
     for tile in self._hexagons:
-      if tile.num_is_blocked():
+      if tile.num_is_blocked(img):
         if blocked is not None:
           print "!! Warning, two robbers detected"
         blocked = tile

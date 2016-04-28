@@ -51,7 +51,7 @@ def auto_test(game, camera, args):
   img_nums = get_image(camera, "test_nums.png")
 
   img3 = get_image(camera, "test_pieces1.png")
-  img4 = get_image(camera, "test_pieces2.png")
+  img4 = get_image(camera, "test5/test2_4.png")
 
   initial = time.time()
   hexes = game.init_game(img1)
@@ -64,10 +64,10 @@ def auto_test(game, camera, args):
   if args['sh']:
     game.save_hexagons("config/hexagons.npy")
 
-  # initial = time.time()
-  # props = game.dice_rolled(1, img4)
-  # print "Time for pieces:", time.time() - initial
-  # Debugger.show_properties(img4, props, 0)
+  initial = time.time()
+  props = game.dice_rolled(1, img4)
+  print "Time for pieces:", time.time() - initial
+  Debugger.show_properties(img4, props, 0)
 
 
 def main():

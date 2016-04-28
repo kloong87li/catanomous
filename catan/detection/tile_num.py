@@ -64,7 +64,6 @@ class TileNumDetector(object):
     # Must make PIL image to run tesseract on it
     pil_image = Image.fromarray(img)
     num = pytesseract.image_to_string(pil_image, config="-psm 7 digits")
-    print "Attempt:", attempt, "Num:", num
     return num
 
 

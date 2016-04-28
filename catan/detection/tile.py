@@ -82,7 +82,7 @@ class TileDetector(object):
     num_ones = np.sum(range_mask) / 255
 
     print "Robber thresh:", num_ones
-    return num_ones > self._ROBBER_THRESH:
+    return num_ones > self._ROBBER_THRESH
 
   def detect_properties(self, new_img, orig_img):
     return self._piece_detect.detect_properties(new_img, self._vertices, orig_img)
