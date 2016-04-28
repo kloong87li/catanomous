@@ -1,6 +1,4 @@
-import bluetooth
-
-from bluetooth import RFCOMM, PORT_ANY
+import bluetooth as bt
 
 class BluetoothServer(object):
 
@@ -11,8 +9,8 @@ class BluetoothServer(object):
     return
 
   def start(self):
-    self._server_sock = BluetoothSocket(RFCOMM)
-    self._server_sock.bind(("", PORT_ANY))
+    self._server_sock = bt.BluetoothSocket(bt.RFCOMM)
+    self._server_sock.bind(("", bt.PORT_ANY))
     self._server_sock.listen(1)
 
     port = self._server_sock.getsockname()[1]
@@ -63,7 +61,7 @@ class BluetoothClient(object):
     host = first_match["host"]
 
     # Create the client socket
-    self._sock = BluetoothSocket( RFCOMM )
+    self._sock = bt.BluetoothSocket( bt.RFCOMM )
     self._sock.connect((host, port))
     return
 
