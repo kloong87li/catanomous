@@ -16,6 +16,10 @@ class DiceDetector(object):
     (lower, upper) = self._config.get("DICE_RED_MASK", img)
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     red_mask = CVUtils.range_mask(hsv, lower, upper)
+
+    (lower, upper) = self._config.get("DICE_RED_MASK2", img)
+    red_mask = cv2.bitwise_or(red_mask, CVUtils.range_mask(hsv, lower, upper))
+
     red_only = CVUtils.mask_image(img, red_mask)
 
     gray = cv2.cvtColor(red_only, cv2.COLOR_BGR2GRAY)
