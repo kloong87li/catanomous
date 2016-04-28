@@ -9,6 +9,8 @@ def main():
                      help='Run test.')
   parser.add_argument('-rh', '--reset_hex', action="store_true", default=False,
                      help='Reset Hexagons.')
+  parser.add_argument('-dr', action="store_true", default=False,
+                     help='Do not resert config.')
   parser.add_argument('-sr', '--skip_resources', action="store_true", default=False,
                      help='Skip resource detection during test.')
   args = vars(parser.parse_args())
@@ -17,7 +19,7 @@ def main():
   controller = MainController()
  
   if args['test']:
-    controller.start_test(args['reset_hex'], args['skip_resources'])
+    controller.start_test(args['reset_hex'], args['skip_resources'], args['dr'])
   else:
     controller.start()
 

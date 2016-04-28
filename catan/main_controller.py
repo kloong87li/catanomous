@@ -116,7 +116,8 @@ class MainController(object):
       elif token == '2':
         self._handle_resource_init(debug=True)
       elif token == '3':
-        self._handle_dice_roll(1, debug=True)
+	num = raw_input("Num? ")
+        self._handle_dice_roll(int(num), debug=True)
       elif token == '4':
         self._listen_for_dice(debug=True)
       elif token == 'X':
@@ -124,8 +125,8 @@ class MainController(object):
     return
 
 
-  def start_test(self, reset_hexes=False, skip_resources=False):
-    self._config = self._prepare_config(True)
+  def start_test(self, reset_hexes=False, skip_resources=False, dont_reset=False):
+    self._config = self._prepare_config(not dont_reset)
     self._camera = Camera(self._config)
     self._camera.start()
     self._game = CatanomousGame(self._config)

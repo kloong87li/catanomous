@@ -23,7 +23,7 @@ class TileDetector(object):
     ("TILE_AMPLIFY_IRON", [200, 200, 200])     # iron
   ]
   _CIRCLE_SCALE = 1.1
-  _ROBBER_THRESH = 200
+  _ROBBER_THRESH = 125
 
 
   def __init__(self, config, contour, hex_img):
@@ -39,6 +39,7 @@ class TileDetector(object):
     self._hex_mask = np.zeros((hex_img.shape[0], hex_img.shape[1]), np.uint8)
     cv2.drawContours(self._hex_mask, [contour], -1, [255, 255, 255], thickness=-1)
     
+    self._circle = None
     self._vertices = self._get_vertices(contour)
     self._resource = None
     self._number = None
@@ -79,15 +80,16 @@ class TileDetector(object):
   def num_is_blocked(self, new_img):
     # Isolate circular area
     roi = self._get_hex_roi(new_img)
+    if self._circle is None: 
+      self._circle = self._detect_circle(new_img)
     circle_mask = self._get_circle_mask(roi, .5)  # Only interested in center portion
     roi = CVUtils.mask_image(roi, circle_mask)
 
     # Check for robber color
     bounds = self._config.get('ROBBER_COLOR', new_img)
-    range_mask = CVUtils.range_mask(roi, bounds[0], bounds[1])
+    range_mask = CVUtils.range_mask(cv2.cvtColor(roi, cv2.COLOR_BGR2HSV), bounds[0], bounds[1])
     num_ones = np.sum(range_mask) / 255
 
-    print "Robber thresh:", num_ones
     return num_ones > self._ROBBER_THRESH
 
   def detect_properties(self, new_img, orig_img):

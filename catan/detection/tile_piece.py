@@ -13,12 +13,12 @@ class PieceDetector(object):
   _PIECE_AREA_RADIUS = 30
   _PIECE_AREA_THRESH = {
       'RED': 250,
-      'BLUE': 250,
+      'BLUE': 200,
       'BROWN': 250,
-      'GREEN': 250,
+      'GREEN': 200,
     }
-  _BLACK_THRESH = 200
-  _MARKER_DIST_FROM_CENTER = 25 # 35
+  _BLACK_THRESH = 250
+  _MARKER_DIST_FROM_CENTER = 30 # 35
 
   def __init__(self, config):
     self._config = config
