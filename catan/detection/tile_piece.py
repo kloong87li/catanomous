@@ -57,7 +57,7 @@ class PieceDetector(object):
     # Determine if circle is legit i.e its center is close enough to the center
     circle = np.uint8(np.around(circles))[0, :][0]
     if self._point_distance((rd, rd), (circle[0], circle[1])) > self._MARKER_DIST_FROM_CENTER:
-      return 'TOO_FAR'
+      return None # 'TOO_FAR'
 
     # Isolate small center area of piece marker to check for color of piece
     # Also isolate outer rim of circle to check for city vs settlement marker color
@@ -70,7 +70,7 @@ class PieceDetector(object):
     piece_roi = CVUtils.mask_image(hsv, mask)
 
     # Determine color of piece
-    piece_color = 'NO_COLOR'
+    piece_color = None #'NO_COLOR'
     piece_num_ones = 0
     for color in self._PLAYER_COLORS:
       bounds = self._config.get('PIECE_COLOR_'+color, orig_img)

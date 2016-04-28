@@ -82,7 +82,15 @@ class BoardDetector(object):
       tiles.append((tile, properties))
     return tiles
 
+  def detect_robber(self, img):
+    blocked = None
+    for tile in self._hexagons:
+      if tile.num_is_blocked():
+        if blocked is not None:
+          print "!! Warning, two robbers detected"
+        blocked = tile
 
+    return blocked
 
 
   def _kmeans(self, img):

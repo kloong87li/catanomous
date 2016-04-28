@@ -67,6 +67,7 @@ class CVConfig(object):
 
       'PIECE_MARKER_BLACK': [([0, 0, 0], [15, 15, 15]), ColorThreshTrackbar],
       "PIECES_HOUGH_CIRCLE": [((20, 60), (45, 25), 10), HoughCircleTrackbar],
+      "ROBBER_THRESH": [([0, 102, 203], [5, 255, 255]), ColorThreshTrackbar],
 
 
       "DICE_RED_MASK": [([1, 1, 1], [9, 255, 255]), ColorThreshTrackbar],

@@ -29,6 +29,9 @@ class CatanomousGame(object):
   def dice_rolled(self, num, updated_img):
     # Return instructions for card dealing
     properties = self._board_detector.detect_properties(updated_img)
+    robber_tile = self._board_detector.detect_robber(updated_img)
+
+    
     return properties #TODO temporary, remove this
 
 
