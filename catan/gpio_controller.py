@@ -37,10 +37,11 @@ class GPIOController(object):
   def led_off(self):
     subprocess.call('sudo sh -c "echo 0 >/sys/class/leds/led0/brightness"', shell=True)
 
-  def led_blink(self, num=1, delay=.3):
-    self.led_off()
-    time.sleep(delay)
-    self.led_on()
-    time.sleep(delay)
-    self.led_off()
+  def led_blink(self, num=1, delay=.5):
+    for i in xrange(num):
+      self.led_off()
+      time.sleep(delay)
+      self.led_on()
+      time.sleep(delay)
+      self.led_off()
 
