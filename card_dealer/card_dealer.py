@@ -19,18 +19,18 @@
 #
 # for 2 woods and 1 sheep to player 0, and 1 brick for player 1 
 # we'll send "0S2W11B1\n"
-#
+
 
 import wiringpi
 
 instruction = ''
-playerDict = {
+player_dict = {
               'GREEN' : '0', 
               'BROWN' : '1', 
               'RED' : '2', 
               'BLUE' : '3'
              }
-resourceDict = {
+resource_dict = {
                 'WOOD' : 'D', 
                 'BRICK' : 'B', 
                 'IRON' : 'O', 
@@ -38,45 +38,43 @@ resourceDict = {
                 'WHEAT' : 'W'
                }
 
-# GREEN, BROWN, RED, BLUE
-# WHEAT, IRON, BRICK, WOOD, SHEEP
-# {player: {resource: count}} 
-
-def setupCardDealer():
+def setup_card_dealer():
     wiringpi.wiringPiSPISetup(1,500000)
     # No need to send initalization byte
 
 # If there's only one method to use, it's this one!
-def processRound(instrDict):
+def process_round(instrDict):
     # Every key is a player 
     for p, resources in instrDict.items():
-        setPlayer(playerDict[p])
+        _set_player(player_dict[p])
         # Iterate over player's resources,
         for res, count in resources.items():
             if (count > 0):
-                giveResource(resourceDict[res], count)
+                _give_resource(resource_dict[res], count)
 
     # Send instruction to card dealer
-    sendAndClearInstruction()
+    _send_and_clear_instruction()
 
 
-def sendAndClearInstruction():
+def _send_and_clear_instruction():
     global instruction
     wiringpi.wiringPiSPIDataRW(1, instruction + '\n')
     instruction = ''
     
-def setPlayer(p):
+def _set_player(p):
     global instruction
     instruction += p
 
-def giveResource(resource, n):
+def _give_resource(resource, n):
     global instruction
     instruction += resource + str(n)
     
 # Run game
-setupCardDealer()
+setup_card_dealer()
 
-# processRound({
+# Example round
+#
+# process_round({
 #               'GREEN' : 
 #                         {
 #                             'WOOD' : 1, 
@@ -110,6 +108,3 @@ setupCardDealer()
 #                             'WHEAT' : 0
 #                         },
 #              })
-# print (instruction)
-
-
