@@ -13,6 +13,7 @@ from utils.bt_utils import BluetoothClient
 class DiceController(object):
   _IMAGE_WIDTH = 1200
   _CONFIG_FILE = "config/config.json"
+  _SERVER_ADDR = "B8:27:EB:A6:25:50"
 
   def __init__(self):
     return
@@ -61,7 +62,7 @@ class DiceController(object):
         self._handle_detect_dice()
       elif token == '2':
         self._bt_client = BluetoothClient()
-        self._bt_client.connect()
+        self._bt_client.connect(self._SERVER_ADDR)
       elif token == 'X':
         if self._bt_client is not None:
           self._bt_client.send('\n')

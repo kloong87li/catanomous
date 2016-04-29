@@ -47,9 +47,9 @@ class BluetoothClient(object):
     self._sock = None
     return
 
-  def connect(self):
+  def connect(self, addr):
     uuid = "94f39d29-7d6d-437d-973b-fba39e49d4ee"
-    service_matches = bt.find_service( uuid = uuid )
+    service_matches = bt.find_service( uuid = uuid , addr = addr)
 
     if len(service_matches) == 0:
       print("!! [BLUETOOTH] Couldn't connect.")
