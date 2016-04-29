@@ -175,7 +175,7 @@ class MainController(object):
     except Exception as e:
       # BLink to indicate an error occured
       import subprocess
-      subprocess.call('sudo sh -c "echo ' + str(e) + ' > /home/pi/log/pylog."', shell=True)
+      subprocess.call('sudo sh -c "echo ' + str(e) + ' > /home/pi/logs/pylog.txt"', shell=True)
       while True:
         self._gpio.led_on()
         time.sleep(1)
