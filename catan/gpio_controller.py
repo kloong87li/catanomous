@@ -6,6 +6,9 @@ class GPIOController(object):
   def __init__(self):
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(16, GPIO.OUT)
+
+    import subprocess
+    subprocess.call("""echo none >/sys/class/leds/led0/trigger""", shell=True)
     return
 
 
@@ -22,7 +25,7 @@ class GPIOController(object):
 
 
   def wait_for_presses(self, pin_num, num_presses):
-    for i in xrange(len(num_presses)):
+    for i in xrange(num_presses):
       self.wait_for_press(pin_num)
 
     return
