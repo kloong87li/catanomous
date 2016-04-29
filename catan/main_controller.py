@@ -13,16 +13,21 @@ from utils.debug import Debugger
 import time
 
 from utils.bt_utils import BluetoothServer
+from catan.gpio_controller import GPIOController
 
 class MainController(object):
   _IMAGE_WIDTH = 1200
   _HEX_FILE = "config/hexagons.npy"
   _CONFIG_FILE = "config/config.json"
+  _BUTTON_PIN = 17
 
   def __init__(self):
     self._camera_hex_config = CVConfig.load_json("config/camera_hex.json")
     self._camera_nums_config = CVConfig.load_json("config/camera_nums.json")
 
+    self._bt_server = BluetoothServer()
+    self._debugger = Debugger(self._bt_server)
+    self._gpio = GPIOController()
     return
 
   def _prepare_config(self, reset=False):
@@ -71,33 +76,105 @@ class MainController(object):
       print "Resources/numbers detected, moving on to pieces, time: ", time.time() - initial
       Debugger.show_resources(num_img, tiles, 0)
 
+    self._debugger.log("Resource/number detection finished.", "RESOURCES")
+    self._debugger.log_tiles(tiles)
+
   # Called to detect new properties and deal cards based on roll
   def _handle_dice_roll(self, num, debug=False):
     img = self._get_image()
     initial = time.time()
-    instructions = self._game.dice_rolled(num, img)
+    (detected, instructions) = self._game.dice_rolled(num, img)
 
     if debug:
       print "Pieces detected, exiting..., time: ", time.time() - initial
-      Debugger.show_properties(img, instructions, 250)
+      Debugger.show_properties(img, detected, 250)
       
+    self._debugger.log("Finished processing dice roll.", "DICE")
+    self._debugger.log_pieces(detected)
+    self._debugger.log_instructions(instructions)
     # TODO something with the instructions
 
 
-  def _listen_for_dice(self, debug=False):
-    self._bt_server.start()
-    sock = self._bt_server.accept()
+  def _listen_for_dice(self, sock, debug=False):
+    
 
     while True:
       num = self._bt_server.receive(sock)
       if num == '\n':
         break
       
-      print "Message from other raspi, NUM:", num
+      self._gpio.led_off()
+      self._debugger.log("Dice roll received: " + num, "DICE")
       self._handle_dice_roll(int(num), debug)
+      self._gpio.led_on()
 
     self._bt_server.close(sock)
     self._bt_server.close_server()
+
+
+
+
+
+  def start_auto(self, visual_debug=False):
+    self._gpio.init_button(self._BUTTON_PIN)
+
+    try:
+      self._config = self._prepare_config()
+      self._camera = Camera(self._config)
+      self._camera.start()
+      self._game = CatanomousGame(self._config)
+
+      self._bt_server.start()
+      self._gpio.led_on()
+      # LED - ON = waiting for something, OFF = processing something
+
+      # PRESS to connect debugger, hold to skip
+      if self._gpio.wait_for_press_or_hold(self._BUTTON_PIN) == 'PRESS':
+        self._gpio.led_off()
+        self._debugger.accept()
+        self._gpio.led_on()
+      else:
+        self._gpio.led_blink(3)
+
+      time.sleep(1.5)
+      try:
+        # Wait for dice detector to connect
+        self._gpio.led_off()
+        dice_sock = self._bt_server.accept()
+        self._gpio.led_on()
+        self._debugger.log("Dice box connected.", "CONNECT")
+
+        # Wait for HOLD to indicate reset hexagons, PRESS means load saved
+        reset_hexagons = self._gpio.wait_for_press_or_hold(self._BUTTON_PIN) == 'HOLD':
+        self._debugger.log("Reset hexagons: " + reset_hexagons, "HEXAGONS")
+        self._gpio.led_off()
+        self._handle_hexagon_init(reset_hexagons, debug=visual_debug)
+        self._gpio.led_on()
+        self._debugger.log("Hexagons detected.", "HEXAGONS")
+
+        # PRESS to initialize resources and numbers
+        self._gpio.wait_for_press(self._BUTTON_PIN)
+        self._gpio.led_off()
+        self._debugger.log("Starting resource/number detection.", "RESOURCES")
+        self._handle_resource_init(debug=visual_debug)
+        self._gpio.led_on()
+
+        # Wait for signals from dice detector
+        self._listen_for_dice(dice_sock, debug=visual_debug)
+
+      except e:
+        # Send to debugger and reraise to blink LED
+        self._debugger.log(str(e), 'ERROR')
+        raise e
+    except e:
+      # BLink to indicate an error occured
+      while True:
+        self._gpio.led_on()
+        time.sleep(1)
+        self._gpio.led_off()
+        time.sleep(1)
+    return
+
 
 
   def start(self):
@@ -105,7 +182,6 @@ class MainController(object):
     self._camera = Camera(self._config)
     self._camera.start()
     self._game = CatanomousGame(self._config)
-    self._bt_server = BluetoothServer()
 
     while (True):
       print '1 to init hexagons, 2 for resources/numbers, 3 for pieces, 4 to use bluetooth'
@@ -117,10 +193,12 @@ class MainController(object):
       elif token == '2':
         self._handle_resource_init(debug=True)
       elif token == '3':
-	num = raw_input("Num? ")
+	      num = raw_input("Num? ")
         self._handle_dice_roll(int(num), debug=True)
       elif token == '4':
-        self._listen_for_dice(debug=True)
+        self._bt_server.start()
+        sock = self._bt_server.accept()
+        self._listen_for_dice(sock, debug=True)
       elif token == 'X':
         break
     return

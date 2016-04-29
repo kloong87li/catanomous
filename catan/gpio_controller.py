@@ -31,6 +31,21 @@ class GPIOController(object):
     return
 
 
+  def wait_for_press_or_hold(self, pin_num, hold_delay=1.5):
+    while GPIO.input(pin_num):
+      time.sleep(.2)
+
+    time_slept = 0
+    while not GPIO.input(pin_num):
+      time.sleep(.1)
+      time_slept += .1
+
+    if time_slept > hold_delay:
+      return 'HOLD'
+    else:
+      return 'PRESS'
+
+
   def led_on(self):
     subprocess.call('sudo sh -c "echo 1 >/sys/class/leds/led0/brightness"', shell=True)
 

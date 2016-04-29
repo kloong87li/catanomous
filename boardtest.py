@@ -64,7 +64,7 @@ def auto_test(game, camera, args):
     game.save_hexagons("config/hexagons.npy")
 
   initial = time.time()
-  props = game.dice_rolled(4, img_pieces)
+  (props, instructions) = game.dice_rolled(4, img_pieces)
   print "Time for pieces:", time.time() - initial
   Debugger.show_properties(img_pieces, props, 0)
 

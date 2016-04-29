@@ -60,6 +60,7 @@ class DiceController(object):
     self._dice_detector = DiceDetector(self._config)
     self._bt_client = BluetoothClient()
 
+    # Connect to BT server
     self._gpio.led_off()
     ret = False
     try:
@@ -68,6 +69,7 @@ class DiceController(object):
       self._gpio.led_blink(3)
       return
 
+    # Green LED on if connected, blink 3 times if failed
     if ret:
       self._gpio.led_on()
     else:
@@ -75,9 +77,14 @@ class DiceController(object):
       return
 
     while(True):
-      self._gpio.wait_for_press(self._BUTTON_PIN)
+      res = self._gpio.wait_for_press_or_hold(self._BUTTON_PIN)
 
-      self._handle_detect_dice()
+      if res == 'PRESS':
+        self._handle_detect_dice()
+      else:
+        break
+
+    self._bt_client.send('\n')
 
 
   def start(self):

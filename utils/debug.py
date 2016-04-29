@@ -51,10 +51,43 @@ class Debugger(object):
         else:
           color = (0, 0, 255) if c.isupper() else (0, 255, 0)
         cv2.circle(img, tuple(pt), 25, color, 1)
-
-      print tile._resource, tile._number, [c for (pt, c) in prop_list]
       
     GUIUtils.update_image(img)
     cv2.waitKey(ui_delay)
     return 
+
+  def __init__(self, bt_server):
+    self._bt_server = bt_server
+    self._client_sock = None
+
+
+  def accept(self):
+    self._client_sock = self._bt_server.accept()
+    return
+
+
+  def log(self, msg, tag):
+    data = '[' + tag + '] ' + msg
+
+    if self._client_sock is None:
+      print data
+    else:
+      self._bt_server.send(self._client_sock, data)
+    return
+
+  def log_tiles(self, tiles):
+    resources = [t._resource + " " + t._number for t in tiles]
+    self.log(str(resources), 'RESOURCES')
+
+  def log_pieces(self, pieces):
+    for (tile, prop_list) in properties:
+      for (pt, c) in prop_list:
+        msg = tile._resource + " " + tile._number + " " + str([c for (pt, c) in prop_list])
+        self.log(msg, 'PIECES')
+    return
+
+  def log_instructions(self, instructions):
+    msg = str(instructions)
+    self.log(msg, 'INSTRUCTIONS')
+    return
 

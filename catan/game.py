@@ -39,8 +39,6 @@ class CatanomousGame(object):
           count = 2 if player.isupper() else 1
           instructions[player.upper()][tile.get_res()] += count
 
-    print instructions
-
-    return detected #TODO temporary, remove this
+    return (detected, instructions) #TODO temporary, remove this
 
 
