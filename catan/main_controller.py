@@ -94,7 +94,7 @@ class MainController(object):
         break
       
       print "Message from other raspi, NUM:", num
-      self._handle_dice_roll(num, debug)
+      self._handle_dice_roll(int(num), debug)
 
     self._bt_server.close(sock)
     self._bt_server.close_server()
