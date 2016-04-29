@@ -79,7 +79,7 @@ class MainController(object):
 
     if debug:
       print "Pieces detected, exiting..., time: ", time.time() - initial
-      Debugger.show_properties(img, instructions, 0)
+      Debugger.show_properties(img, instructions, 250)
       
     # TODO something with the instructions
 
@@ -93,6 +93,7 @@ class MainController(object):
       if num == '\n':
         break
       
+      print "Message from other raspi, NUM:", num
       self._handle_dice_roll(num, debug)
 
     self._bt_server.close(sock)
