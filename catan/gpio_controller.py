@@ -8,7 +8,7 @@ class GPIOController(object):
     GPIO.setup(16, GPIO.OUT)
 
     import subprocess
-    subprocess.call("""echo none >/sys/class/leds/led0/trigger""", shell=True)
+    subprocess.call('sudo sh -c "echo none > /sys/class/leds/led0/trigger"', shell=True)
     return
 
 
