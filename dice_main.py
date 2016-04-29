@@ -6,6 +6,8 @@ def main():
   parser = argparse.ArgumentParser(description='Use CV to analyze Catan board.')
   parser.add_argument('-t', '--test', action="store_true", default=False,
                      help='Run test.')
+  parser.add_argument('-a', '--auto', action="store_true", default=False,
+                     help='Run auto.')
   args = vars(parser.parse_args())
 
 
@@ -13,6 +15,8 @@ def main():
  
   if args['test']:
     controller.start_test()
+  elif args['auto']:
+    controller.start_auto()
   else:
     controller.start()
 

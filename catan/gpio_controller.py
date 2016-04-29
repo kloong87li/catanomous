@@ -1,13 +1,11 @@
 import RPi.GPIO as GPIO
-import time
+import time, subprocess
 
 class GPIOController(object):
 
   def __init__(self):
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(16, GPIO.OUT)
 
-    import subprocess
     subprocess.call('sudo sh -c "echo none > /sys/class/leds/led0/trigger"', shell=True)
     return
 
@@ -20,9 +18,11 @@ class GPIOController(object):
   def wait_for_press(self, pin_num):
     while GPIO.input(pin_num):
       time.sleep(.2)
+
+    while not GPIO.input(pin_num):
+      time.sleep(.2)
     
     return
-
 
   def wait_for_presses(self, pin_num, num_presses):
     for i in xrange(num_presses):
@@ -32,15 +32,16 @@ class GPIOController(object):
 
 
   def led_on(self):
-    GPIO.output(16, GPIO.LOW)
+    subprocess.call('sudo sh -c "echo 1 >/sys/class/leds/led0/brightness"', shell=True)
 
   def led_off(self):
-    GPIO.output(16, GPIO.HIGH)
+    subprocess.call('sudo sh -c "echo 0 >/sys/class/leds/led0/brightness"', shell=True)
 
-  def led_blink(self, num=1):
-    self.led_off()
-    time.sleep(.3)
-    self.led_on()
-    time.sleep(.3)
-    self.led_off()
+  def led_blink(self, num=1, delay=.5):
+    for i in xrange(num):
+      self.led_off()
+      time.sleep(delay)
+      self.led_on()
+      time.sleep(delay)
+      self.led_off()
 
