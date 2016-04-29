@@ -133,9 +133,9 @@ class MainController(object):
         self._gpio.led_off()
         self._debugger.accept()
         self._gpio.led_on()
-	self._debugger.log("Connected to bluetooth debugger.", "CONNECT")
+        self._debugger.log("Connected to bluetooth debugger.", "CONNECT")
       else:
-	self._debugger.log("No debugger chosen.", "CONNECT")
+        self._debugger.log("No debugger chosen.", "CONNECT")
         self._gpio.led_blink(3)
 
       time.sleep(1.5)
@@ -148,7 +148,7 @@ class MainController(object):
         self._debugger.log("Dice box connected.", "CONNECT")
 
         # Wait for HOLD to indicate reset hexagons, PRESS means load saved
-	self._debugger.log("HOLD to reset hexes, PRESS to load.", "INPUT")
+        self._debugger.log("HOLD to reset hexes, PRESS to load.", "INPUT")
         reset_hexagons = self._gpio.wait_for_press_or_hold(self._BUTTON_PIN) == 'HOLD'
         self._debugger.log("Reset hexagons: " + str(reset_hexagons), "HEXAGONS")
         self._gpio.led_off()
@@ -165,7 +165,7 @@ class MainController(object):
         self._gpio.led_on()
 
         # Wait for signals from dice detector
-	self._debugger.log("Waiting for dice rolls...", "INPUT")
+        self._debugger.log("Waiting for dice rolls...", "INPUT")
         self._listen_for_dice(dice_sock, debug=visual_debug)
 
       except Exception as e:
@@ -199,7 +199,7 @@ class MainController(object):
       elif token == '2':
         self._handle_resource_init(debug=True)
       elif token == '3':
-	num = raw_input("Num? ")
+        num = raw_input("Num? ")
         self._handle_dice_roll(int(num), debug=True)
       elif token == '4':
         self._bt_server.start()

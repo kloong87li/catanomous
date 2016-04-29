@@ -59,3 +59,5 @@ class GPIOController(object):
       self.led_on()
       time.sleep(delay)
 
+    self._led_off()
+

@@ -47,10 +47,10 @@ def prepare_config(args):
 # Automatically does a new game + update with 2 test images
 def auto_test(game, camera, args):
   img_hex = get_image(camera, "test_hex.png")
-  img_res = get_image(camera, "test_pieces1.png")
-  img_nums = get_image(camera, "test_pieces1.png")
+  img_res = get_image(camera, "test_resource.png")
+  img_nums = get_image(camera, "test_nums.png")
 
-  img_pieces = get_image(camera, "test_pieces2.png")
+  img_pieces = get_image(camera, "test_pieces1.png")
 
   initial = time.time()
   hexes = game.init_game(img_hex)

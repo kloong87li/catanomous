@@ -74,8 +74,8 @@ class Debugger(object):
       try:
       	self._bt_server.send(self._client_sock, data)
       except Exception as e:
-	print "[BLUETOOTH] Debugger disconnected"
-	self._client_sock = None
+        print "[BLUETOOTH] Debugger disconnected"
+        self._client_sock = None
 
   def log_tiles(self, tiles):
     resources = [t._resource + " " + str(t._number) for t in tiles]
