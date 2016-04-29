@@ -4,4 +4,5 @@
 
 export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.7/site-packages
 . /home/pi/.virtualenvs/cv/bin/activate
-sudo /home/pi/.virtualenvs/cv/bin/python /home/pi/catanomous/main.py -a
+cd /home/pi/catanomous
+sudo /home/pi/.virtualenvs/cv/bin/python main.py -a

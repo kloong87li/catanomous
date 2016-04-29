@@ -4,4 +4,5 @@
 
 export PYTHONPATH=${PYTHONPATH}:/usr/local/lib/python2.7/site-packages
 . /home/.virtualenvs/cv/bin/activate
-sudo /home/.virtualenvs/cv/bin/python /home/catanomous/dice_main.py -a
+cd /home/pi/catanomous
+sudo /home/.virtualenvs/cv/bin/python dice_main.py -a
