@@ -53,7 +53,7 @@ class BluetoothClient(object):
 
     if len(service_matches) == 0:
       print("!! [BLUETOOTH] Couldn't connect.")
-      return
+      return False
 
     first_match = service_matches[0]
     port = first_match["port"]
@@ -63,7 +63,7 @@ class BluetoothClient(object):
     # Create the client socket
     self._sock = bt.BluetoothSocket( bt.RFCOMM )
     self._sock.connect((host, port))
-    return
+    return True
 
   def send(self, data):
     self._sock.sendall(data)

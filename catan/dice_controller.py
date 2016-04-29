@@ -60,13 +60,18 @@ class DiceController(object):
     self._dice_detector = DiceDetector(self._config)
     self._bt_client = BluetoothClient()
 
+    ret = False
     try:
-      self._bt_client.connect(self._SERVER_ADDR)
+      ret = self._bt_client.connect(self._SERVER_ADDR)
     except e:
       self._gpio.led_blink(3)
       return
 
-    self._gpio.led_on()
+    if ret:
+      self._gpio.led_on()
+    else:
+      self._gpio.led_blink(3)
+      return
 
     while(True):
       self._gpio.wait_for_press(self._BUTTON_PIN)
