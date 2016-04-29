@@ -53,7 +53,7 @@ class DiceController(object):
 
 
 
-  def start_auto():
+  def start_auto(self):
     self._config = self._prepare_config()
     self._camera = Camera(self._config)
     self._camera.start()
@@ -67,7 +67,7 @@ class DiceController(object):
       return
 
     self._gpio.led_on()
-    
+
     while(True):
       self._gpio.wait_for_press(self._BUTTON_PIN)
 
