@@ -28,6 +28,7 @@ class MainController(object):
     self._bt_server = BluetoothServer()
     self._debugger = Debugger(self._bt_server)
     self._gpio = GPIOController()
+    self._card_dealer = None
     return
 
   def _prepare_config(self, reset=False):
@@ -92,7 +93,9 @@ class MainController(object):
     self._debugger.log("Finished processing dice roll.", "DICE")
     self._debugger.log_pieces(detected)
     self._debugger.log_instructions(instructions)
-    # TODO something with the instructions
+    
+    if self._card_dealer is not None:
+      self._card_dealer.process_round(instructions)
 
 
   def _listen_for_dice(self, sock, debug=False):
@@ -126,6 +129,7 @@ class MainController(object):
     self._gpio.led_off()
 
     try:
+      self._card_dealer = CardDealer()
       self._config = self._prepare_config()
       self._camera = Camera(self._config)
       self._camera.start()

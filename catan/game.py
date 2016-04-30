@@ -37,7 +37,10 @@ class CatanomousGame(object):
       if num == tile.get_num() and not tile.num_is_blocked(updated_img):
         for (pt, player) in plist:
           count = 2 if player.isupper() else 1
-          instructions[player.upper()][tile.get_res()] += count
+          try:
+            instructions[player.upper()][tile.get_res()] += count
+          except Exception as e:
+            continue
 
     return (detected, instructions) #TODO temporary, remove this
 

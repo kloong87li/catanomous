@@ -23,54 +23,46 @@
 
 import wiringpi
 
-instruction = ''
-player_dict = {
+
+class CardDealer(object):
+  _PLAYER_DICT = {
               'GREEN' : '0', 
               'BROWN' : '1', 
               'RED' : '2', 
               'BLUE' : '3'
              }
-resource_dict = {
-                'WOOD' : 'D', 
-                'BRICK' : 'B', 
-                'IRON' : 'O', 
-                'SHEEP' : 'S', 
-                'WHEAT' : 'W'
-               }
 
-def setup_card_dealer():
-    wiringpi.wiringPiSPISetup(1,500000)
-    # No need to send initalization byte
+  _RESOURCE_DICT = {
+                  'WOOD' : 'D', 
+                  'BRICK' : 'B', 
+                  'IRON' : 'O', 
+                  'SHEEP' : 'S', 
+                  'WHEAT' : 'W'
+                 }
 
-# If there's only one method to use, it's this one!
-def process_round(instrDict):
-    # Every key is a player 
-    for p, resources in instrDict.items():
-        _set_player(player_dict[p])
-        # Iterate over player's resources,
-        for res, count in resources.items():
-            if (count > 0):
-                _give_resource(resource_dict[res], count)
+  def __init__(self):
+      wiringpi.wiringPiSPISetup(1, 500000)
+      # No need to send initalization byte
 
-    # Send instruction to card dealer
-    _send_and_clear_instruction()
+  # If there's only one method to use, it's this one!
+  def process_round(self, instrDict):
+      instruction = ''
+      # Every key is a player 
+      for p, resources in instrDict.items():
+          instruction += self._PLAYER_DICT[p]
+          # Iterate over player's resources,
+          for res, count in resources.items():
+              if (count > 0):
+                  instruction += self._RESOURCE_DICT[res] + str(count)
 
+      # Send instruction to card dealer
+      self._send_instruction(instruction)
 
-def _send_and_clear_instruction():
-    global instruction
-    wiringpi.wiringPiSPIDataRW(1, instruction + '\n')
-    instruction = ''
-    
-def _set_player(p):
-    global instruction
-    instruction += p
-
-def _give_resource(resource, n):
-    global instruction
-    instruction += resource + str(n)
+  def _send_instruction(self, instruction):
+      wiringpi.wiringPiSPIDataRW(1, instruction + '\n')
     
 # Run game
-setup_card_dealer()
+# setup_card_dealer()
 
 # Example round
 #
