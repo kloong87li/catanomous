@@ -121,6 +121,7 @@ class MainController(object):
     # Wait for button PRESS to continue, or HOLD to exit
     self._gpio.led_on()
     if self._gpio.wait_for_press_or_hold(self._BUTTON_PIN) == 'HOLD':
+      self._gpio.led_restore()
       return
     self._gpio.led_off()
 

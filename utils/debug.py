@@ -78,12 +78,14 @@ class Debugger(object):
         self._client_sock = None
 
   def log_tiles(self, tiles):
-    resources = [t._resource + " " + str(t._number) for t in tiles]
+    resources = []
+    for t in tiles:
+      resources.append(str(t._resource) + " " + str(t._number))
     self.log(str(resources), 'RESOURCES')
 
   def log_pieces(self, pieces):
     for (tile, prop_list) in pieces:
-      msg = tile._resource + " " + str(tile._number) + " " + str([c for (pt, c) in prop_list])
+      msg = str(tile._resource) + " " + str(tile._number) + " " + str([c for (pt, c) in prop_list])
       self.log(msg, 'PIECES')
     return
 
