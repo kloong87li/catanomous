@@ -14,6 +14,7 @@ import time
 
 from utils.bt_utils import BluetoothServer
 from catan.gpio_controller import GPIOController
+from catan.card_dealer import CardDealer
 
 class MainController(object):
   _IMAGE_WIDTH = 1200

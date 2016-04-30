@@ -21,7 +21,6 @@ class DiceController(object):
     self._bt_client = None
     self._gpio = GPIOController()
     self._gpio.init_button(self._BUTTON_PIN)
-    self._card_dealer = None
     return
 
   def _prepare_config(self, reset=False):
