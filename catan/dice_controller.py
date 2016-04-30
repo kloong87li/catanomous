@@ -55,9 +55,10 @@ class DiceController(object):
 
 
   def start_auto(self):
-    # Wait for button PRESS to connect to server
+    # Wait for button PRESS to connect to server, or HOLD to exit
     self._gpio.led_on()
-    self._gpio.wait_for_press(self._BUTTON_PIN)
+    if self._gpio.wait_for_press_or_hold(self._BUTTON_PIN) == 'HOLD':
+      return
     
     self._config = self._prepare_config()
     self._camera = Camera(self._config)
