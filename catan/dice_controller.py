@@ -55,15 +55,15 @@ class DiceController(object):
 
 
   def start_auto(self):
+    # Wait for button PRESS to connect to server
+    self._gpio.led_on()
+    self._gpio.wait_for_press(self._BUTTON_PIN)
+    
     self._config = self._prepare_config()
     self._camera = Camera(self._config)
     self._camera.start()
     self._dice_detector = DiceDetector(self._config)
     self._bt_client = BluetoothClient()
-
-    # Wait for button PRESS to connect to server
-    self._gpio.led_on()
-    self._gpio.wait_for_press(self._BUTTON_PIN)
 
     # Connect to BT server
     self._gpio.led_off()

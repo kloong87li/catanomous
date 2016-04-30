@@ -118,6 +118,12 @@ class MainController(object):
   def start_auto(self, visual_debug=False):
     self._gpio.init_button(self._BUTTON_PIN)
 
+    # Wait for button PRESS to continue, or HOLD to exit
+    self._gpio.led_on()
+    if self._gpio.wait_for_press_or_hold(self._BUTTON_PIN) == 'HOLD':
+      return
+    self._gpio.led_off()
+
     try:
       self._config = self._prepare_config()
       self._camera = Camera(self._config)
@@ -128,7 +134,7 @@ class MainController(object):
       self._gpio.led_on()
       # LED - ON = waiting for something, OFF = processing something
 
-      # PRESS to connect debugger, hold to skip
+      # PRESS to connect debugger, HOLD to skip
       if self._gpio.wait_for_press_or_hold(self._BUTTON_PIN) == 'PRESS':
         self._gpio.led_off()
         self._debugger.accept()
