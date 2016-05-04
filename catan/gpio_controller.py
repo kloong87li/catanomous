@@ -59,7 +59,7 @@ class GPIOController(object):
       self.led_on()
       time.sleep(delay)
 
-    self._led_off()
+    self.led_off()
 
   def led_restore(self):
     subprocess.call('sudo sh -c "echo mmc0 > /sys/class/leds/led0/trigger"', shell=True)
