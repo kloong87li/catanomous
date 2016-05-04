@@ -81,6 +81,26 @@ class MainController(object):
     self._debugger.log("Resource/number detection finished.", "RESOURCES")
     self._debugger.log_tiles(tiles)
 
+
+  def _hardcode_numbers(self):
+    img = self._get_image()
+    hexagons = self._game._board_detector._hexagons
+
+    mask = np.zeros(img.shape)
+    for h in hexagons:
+      cv2.drawContours(mask, [c], -1, (255, 255, 255), 2)
+
+      GUIUtils.update_image(mask)
+      cv2.waitKey(250)
+
+      num = int(raw_input("Number? "))
+      h._number = num
+
+      mask.fill(0)
+
+    self._debugger.log_tiles(hexagons)
+
+
   # Called to detect new properties and deal cards based on roll
   def _handle_dice_roll(self, num, debug=False):
     img = self._get_image()
@@ -204,7 +224,7 @@ class MainController(object):
     self._game = CatanomousGame(self._config)
 
     while (True):
-      print '1 to init hexagons, 2 for resources/numbers, 3 for pieces, 4 to use bluetooth'
+      print '1 to init hexagons, 2 for resources/numbers, 3 for pieces, 4 to use bluetooth, 5 to fix numbers'
       token = raw_input("Input: ")
 
       if token == '1':
@@ -215,6 +235,8 @@ class MainController(object):
       elif token == '3':
         num = raw_input("Num? ")
         self._handle_dice_roll(int(num), debug=True)
+      elif token == '5':
+        self._hardcode_numbers()
       elif token == '4':
         self._bt_server.start()
         sock = self._bt_server.accept()

@@ -35,7 +35,7 @@ def main():
     quantity = raw_input("Quantity: ")
 
     try:
-      instructions[player.upper()][resource.upper()] = quantity
+      instructions[player.upper()][resource.upper()] = int(quantity)
 
       dealer.process_round(instructions)
 
