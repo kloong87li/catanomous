@@ -29,8 +29,12 @@ class TrackbarWindow(object):
     self.on_value_change(value, name)
     self.show_image()
 
-  def show_image(self):
+  def show_image(self, img_output):
     (img, width) = self.get_image()
+
+    if img_output is not None:
+      CVUtils.save_img(img, img_output)
+    
     GUIUtils.update_image(imutils.resize(img, width=width), self.get_window_name())
     return
 

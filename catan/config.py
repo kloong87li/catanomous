@@ -115,10 +115,10 @@ class CVConfig(object):
     CVConfig.save_json(filename, cjson)
 
   # Retrieve a key, launching a config GUI if necessary
-  def get(self, key, img, force_reset=False):
+  def get(self, key, img, force_reset=False, img_output=None):
     if self._values[key][2] or force_reset: # is_reset
       trackbar = self._values[key][1](img, self._values[key][0], key)
-      trackbar.show_image()
+      trackbar.show_image(img_output)
       GUIUtils.wait()
       trackbar.close_image()
       result = trackbar.get_result()
