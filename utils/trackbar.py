@@ -34,8 +34,8 @@ class TrackbarWindow(object):
 
     if img_output is not None:
       CVUtils.save_img(img, img_output)
-    else:
-      GUIUtils.update_image(imutils.resize(img, width=width), self.get_window_name())
+
+    GUIUtils.update_image(imutils.resize(img, width=width), self.get_window_name())
     return
 
   def close_image(self):

@@ -57,7 +57,11 @@ class CVUtils(object):
 
   @staticmethod
   def save_img(img, path):
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    try:
+      img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    except:
+      img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+
     im = Image.fromarray(img)
     im.save(path)
 
