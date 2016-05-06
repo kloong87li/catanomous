@@ -18,6 +18,8 @@ class Debugger(object):
       # draw contour
       cv2.drawContours(img, [c], -1, (0, 255, 0), 2)
 
+    CVUtils.save_img(img, "images/hex_output.png")
+
     GUIUtils.update_image(img)
     cv2.waitKey(ui_delay)
 
